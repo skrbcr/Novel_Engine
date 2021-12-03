@@ -92,14 +92,14 @@ namespace Game {
 		font6 = CreateFontToHandle("游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16);
 
 		// ダイアログボックス画像読み込み
-		Dialog::gh_box = LoadGraph("data/picture/dialog.png");
+		Dialog::gh_box = LoadGraph("data/picture/[自作]dialog.png");
 
 		// システムSE読み込み
-		sh_cursor = LoadSoundMem("data/se/cursor.ogg");
-		sh_decide = LoadSoundMem("data/se/decide.ogg");
-		sh_cancel = LoadSoundMem("data/se/cancel.ogg");
-		sh_success = LoadSoundMem("data/se/success.ogg");
-		sh_fail = LoadSoundMem("data/se/fail.ogg");
+		sh_cursor = LoadSoundMem("data/se/[効果音ラボ]cursor3.ogg");
+		sh_decide = LoadSoundMem("data/se/[効果音ラボ]decision2.ogg");
+		sh_cancel = LoadSoundMem("data/se/[効果音ラボ]cancel2.ogg");
+		sh_success = LoadSoundMem("data/se/[TAM]decide1.ogg");
+		sh_fail = LoadSoundMem("data/se/[Pocket sound]エラー拒否音.ogg");
 	}
 
 	void DeleteHandles() {

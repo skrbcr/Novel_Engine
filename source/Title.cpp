@@ -62,6 +62,7 @@ namespace Game {
 						ifs.close();
 						//if (strcmp(saveData[i].strheader, GAME_HEADER) && strcmp(saveData[i].strgm, GAME_NAME)) {
 						opt_title = 1;
+						button_title.SetSelection(1);
 						//}
 						//else {
 						//	saveData[i] = SaveData();
