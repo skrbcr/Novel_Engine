@@ -1,19 +1,19 @@
 # Novel_Engine
-ノベルゲームのエンジン　DXライブラリで作成
+ノベルゲームのエンジン　DXライブラリで製作中  
 現在アルファ版
 
 ## 概要
 ### このソフトについて
-[DXライブラリ](https://dxlib.xsrv.jp/)で製作中の、ノベルゲームのエンジンみたいなものです。
+[DXライブラリ](https://dxlib.xsrv.jp/)で製作中の、ノベルゲームのエンジンみたいなものです。現在はソースコードのみの公開となっています。  
 なお、Windows専用となっています。
 
 ### 現在アルファ版
 現在アルファ版です。正式版ではないため、不完全だったり、仕様があれこれ変更になったりといった可能性大です。例えば、ノベルゲームには必須の立ち絵表示機能の実装はこれから行う予定です（README書いている場合じゃないですね......）。
 
 ### 動作環境
-「古すぎない普通のWindowsパソコン」で動きます。
+「古すぎない普通のWindowsパソコン」で動きます。  
 具体的には、DXライブラリの動作環境
- - WindowsXP以上のOSがインストールざれたパソコン
+ - WindowsXP以上のOSがインストールされたパソコン
  - DirectX9以降がインストールされていること（通常のPCであれば、購入時点でインストールされているので、心配はないと思います）
 
 で動きます。
@@ -31,10 +31,10 @@
 
 
 ## 使用ライブラリ
-本ソフトは以下のライブラリを使わせていただいています。
+本ソフトは以下のライブラリを使わせていただいています。  
 また、本ソフト配布時には、説明書などにこれらと同じ内容を記載していただきますよう、お願い申し上げます。
 <ul>
-    <li><a href="https://dxlib.xsrv.jp/">DXライブラリ</a><br/><details><summary>著作権表示</summary><div>
+    <li><a href="https://dxlib.xsrv.jp/">DXライブラリ</a>：Ver 3.23（ソースコードには含まれていません）<br/><details><summary>著作権表示</summary><div>
 libjpeg　Copyright (C) 1991-2013, Thomas G. Lane, Guido Vollbeding.<br/>
 this software is based in part on the work of the Independent JPEG Group
 <br/><br/><br/>
@@ -188,7 +188,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Bullet　Copyright (c) 2003-2006 Erwin Coumans.
 <br/><br/>
     </div></details></li>
-    <li><a href="https://github.com/javacommons/strconv">nlohmann/json</a><br/><details><summary>著作権表示</summary><div>
+    <li><a href="https://github.com/nlohmann/json">nlohmann/json</a>：version 3.10.4<br/><details><summary>著作権表示</summary><div>
 Copyright (c) 2013-2021 Niels Lohmann
 <br/><br/>
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -210,7 +210,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 <br/><br/>
     </div></details></li>
-    <li><a href="https://github.com/javacommons/strconv">javacommons/strconv</a><br/><details><summary>著作権表示</summary><div>
+    <li><a href="https://github.com/javacommons/strconv">javacommons/strconv</a>：v1.8.10<br/><details><summary>著作権表示</summary><div>
 Copyright (c) 2019-2021 JavaCommons
 <br/><br/>
 Permission is hereby granted, free of charge, to any person obtaining a copy of
