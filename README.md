@@ -21,7 +21,7 @@
 ### 本ソフトの特徴（実装予定含む）
 
  - ノベルゲーム制作に特化
- - テキスト表示など、基本的なノベルゲームの機能は搭載済み（プログラミング不要）
+ - テキスト表示など、基本的なノベルゲームの機能は搭載の予定（プログラミング不要）
  - JSONファイルでセリフの記述や背景画像の指定などができる（JSONファイルは、プログラミング未経験者でもすぐに扱えるようになるテキストファイルのようなものです）
  - C++言語で書かれたソースコードを改造することで、オリジナルの機能を追加できる（かなり上級者向け？）
  
@@ -31,8 +31,8 @@
 
 
 ## 本ソフトのライセンス
-ソフトにつきましては、現時点では、何か公開する作品等に使っていただくことはご遠慮ください（素材の著作権等の問題で）。  
-現在アルファ版につき、不具合等が多く残っている可能性があります。そのため、現時点では、ソースコードの配布もご遠慮いただく、ということにしております。
+（12/04 更新）  
+ソフト・ソースコードの両方について、現時点では再配布はご遠慮ください。これは、本ソフトが現在アルファ版につき、不具合等が多く残っている可能性があるためです。
 
 
 ## 使用ライブラリ
@@ -193,7 +193,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Bullet　Copyright (c) 2003-2006 Erwin Coumans.
 <br/><br/>
     </div></details></li>
-    <li><a href="https://github.com/nlohmann/json">nlohmann/json</a>：version 3.10.4<br/><details><summary>著作権表示</summary><div>
+    <li><a href="https://github.com/nlohmann/json">nlohmann/json</a>：version 3.10.4（source/nlohmannフォルダに同梱）    <br/><details><summary>著作権表示</summary><div>
 Copyright (c) 2013-2021 Niels Lohmann
 <br/><br/>
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -215,7 +215,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 <br/><br/>
     </div></details></li>
-    <li><a href="https://github.com/javacommons/strconv">javacommons/strconv</a>：v1.8.10<br/><details><summary>著作権表示</summary><div>
+    <li><a href="https://github.com/javacommons/strconv">javacommons/strconv</a>：v1.8.10（source/javacommonsフォルダに同梱）<br/><details><summary>著作権表示</summary><div>
 Copyright (c) 2019-2021 JavaCommons
 <br/><br/>
 Permission is hereby granted, free of charge, to any person obtaining a copy of
