@@ -1,5 +1,18 @@
+// skrbcr/Novel_Engine ver.0.1.0（https://github.com/skrbcr/Novel_Engine）
+// DXライブラリ使用のノベルゲームエンジン？のアルファ版
+// 
+// 配布ソースコードの一部に、以下のライブラリを含みます
+// 著作権表示等の詳細は、README.mdをご覧ください
+// ・nlohmann/json（ https://github.com/nlohmann/json ）version 3.9.1
+// ・javacommons/strconv（ https://github.com/javacommons/strconv ）v1.8.10
+// 
+// また、本ソフトは DXライブラリ（Ver3.23 https://dxlib.xsrv.jp/ ）も使用していますが
+// 配布ソースコードには含んでおりませんので、ビルドされる方は、各位でのダウンロードや設定等をお願いいたします
+// 
+
 #include "DxLib.h"
 #include "nlohmann/json.hpp"
+#include "javacommons/strconv.h"
 #include "Global.h"
 #include "Menu.h"
 #include "Place.h"
@@ -93,13 +106,6 @@ namespace Game {
 
 		// ダイアログボックス画像読み込み
 		Dialog::gh_box = LoadGraph("data/picture/[自作]dialog.png");
-
-		// システムSE読み込み
-		sh_cursor = LoadSoundMem("data/se/[効果音ラボ]cursor3.ogg");
-		sh_decide = LoadSoundMem("data/se/[効果音ラボ]decision2.ogg");
-		sh_cancel = LoadSoundMem("data/se/[効果音ラボ]cancel2.ogg");
-		sh_success = LoadSoundMem("data/se/[TAM]decide1.ogg");
-		sh_fail = LoadSoundMem("data/se/[Pocket sound]エラー拒否音.ogg");
 	}
 
 	void DeleteHandles() {
@@ -130,17 +136,32 @@ namespace Game {
 		// ゲームタイトルの設定
 		if (js["game"].is_object()) {
 			if (js["game"]["name"].is_string()) {
-				string str = js["game"]["name"];
-				str = utf8_to_ansi(str);
-				strGameName = str;
+				strGameName = utf8_to_ansi(js["game"]["name"]);
 				SetWindowTextA(strGameName.c_str());
 			}
 			if (js["game"]["version"].is_string()) {
-				string str = js["game"]["version"];
-				str = utf8_to_ansi(str);
-				strGameVersion = str;
+				strGameVersion = utf8_to_ansi(js["game"]["version"]);
 			}
 		}
+		// システムSEの読み込み
+		if (js["se"].is_object()) {
+			if (js["se"]["cursor"].is_string()) {
+				sh_cursor = LoadSoundMem(utf8_to_ansi(js["se"]["cursor"]).c_str());
+			}
+			if (js["se"]["decide"].is_string()) {
+				sh_decide = LoadSoundMem(utf8_to_ansi(js["se"]["decide"]).c_str());
+			}
+			if (js["se"]["cancel"].is_string()) {
+				sh_cancel = LoadSoundMem(utf8_to_ansi(js["se"]["cancel"]).c_str());
+			}
+			if (js["se"]["success"].is_string()) {
+				sh_success = LoadSoundMem(utf8_to_ansi(js["se"]["success"]).c_str());
+			}
+			if (js["se"]["fail"].is_string()) {
+				sh_fail = LoadSoundMem(utf8_to_ansi(js["se"]["fail"]).c_str());
+			}
+		}
+
 		// タイトル画面の設定
 		string strBack = "";
 		string strBgm = "";
