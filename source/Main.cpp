@@ -7,7 +7,7 @@
 // ・javacommons/strconv（ https://github.com/javacommons/strconv ）v1.8.10
 // 
 // また、本ソフトは DXライブラリ（Ver3.23 https://dxlib.xsrv.jp/ ）も使用していますが
-// 配布ソースコードには含んでおりませんので、ビルドされる方は、各位でのダウンロードや設定等をお願いいたします
+// 配布ソースコードには含んでおりませんので、ビルドされる方は、ご自身でのダウンロードや設定等をお願いいたします
 // 
 
 #include "DxLib.h"
