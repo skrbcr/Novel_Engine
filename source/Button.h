@@ -25,8 +25,9 @@ namespace Game {
 
 
 	public:
-		Button() {
-			vvpos = vector<vector<int>>(0, vector<int>(4));
+		Button(int num = 0) {
+			vvpos = vector<vector<int>>(num, vector<int>(4));
+			this->num = num;
 		}
 
 		/// <summary>

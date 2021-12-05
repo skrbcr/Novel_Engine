@@ -1,19 +1,6 @@
 #include "Title.h"
 
 namespace Game {
-	//Title::Title() {
-	//	gh_back = LoadGraph("data/picture/title.jpg");
-	//	gh_logo = LoadGraph("data/picture/logo.png");
-	//	gh_hajime = LoadGraph("data/picture/hajimekara.png");
-	//	gh_tsuduki = LoadGraph("data/picture/tsudukikara.png");
-	//	sh_bgm = LoadSoundMem("data/bgm/bgm.ogg");
-	//	button_load.SetGroup(1, 0, 0xCCCCFF);
-	//	button_load.AddButton(160, 230, 960, 85);
-	//	button_load.AddButton(160, 330, 960, 85);
-	//	button_load.AddButton(160, 430, 960, 85);
-	//	button_load.AddButton(905, 570, GetDrawStringWidthToHandle("タイトルに戻る", static_cast<int>(strlen("タイトルに戻る")), font3) + 10, 40);
-	//}
-
 	Title::Title(string_view strBackImgFile, string_view strBgmFile, double bgmVol, bool showVer) {
 		gh_back = LoadGraph(strBackImgFile.data());
 		if (gh_back == -1) {
@@ -74,8 +61,6 @@ namespace Game {
 				// 画面演出
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 - 255 * fcounter / 30.0));
 				DrawBox(0, 0, WIDTH, HEIGHT, 0x000000, TRUE);
-				//DrawGraphF(62, 92, gh_logo, TRUE);
-				//DrawStringToHandle(WIDTH - 20 - static_cast<int>(strlen(GAME_VERSION)) * 13, HEIGHT - 30, GAME_VERSION, 0x000000, font2);
 				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 				// 演出終了・BGM再生開始
@@ -174,17 +159,26 @@ namespace Game {
 			for (int i = 0; i < 3; ++i) {
 				if (saveData[i].saveCount != 0) {
 					struct tm local;
+					time_t timer = time(NULL);
+					//localtime_s(&local, &timer);
 					localtime_s(&local, &saveData[i].saveTime);
-					int year = local.tm_year + 1900;
+					int year = static_cast<long long>(local.tm_year) + 1900;
 					int month = local.tm_mon + 1;
 					int day = local.tm_mday;
 					int hour = local.tm_hour;
 					int min = local.tm_min;
-					char min2[3];
-					if (min < 10) sprintf_s(min2, 3, "0%d", min);
-					else sprintf_s(min2, 3, "%d", min);
-
-					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, min2, saveData[i].saveCount);
+					string strMin = "";
+					//char min2[3];
+					if (min < 10) {
+						strMin = "0";
+						strMin += std::to_string(min);
+						//sprintf_s(min2, 3, "0%d", min);
+					}
+					else {
+						strMin = std::to_string(min);
+						//sprintf_s(min2, 3, "%d", min);
+					}
+					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
 			}
 			break;
