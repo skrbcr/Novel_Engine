@@ -17,8 +17,6 @@ namespace Game {
 		int fcounter = 0;			// フレームカウンタ
 		int alpha = 0;				// アルファ値
 
-		//bool onFreeze = false;
-
 		vector<vector<int>> vvpos;
 
 		color_t color = 0;			// ボタン色
