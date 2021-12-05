@@ -2,13 +2,22 @@
 
 namespace Game {
 	void Button::SetGroup(int span_ver, int span_hol, color_t color) {
-		index = 0;
-		num = 0;
+		//index = 0;
+		//num = 0;
 		this->span_ver = span_ver;
 		this->span_hol = span_hol;
 		this->color = color;
-		fcounter = 0;
-		vvpos = vector<vector<int>>();
+		//fcounter = 0;
+		//vvpos = vector<vector<int>>();
+	}
+
+	void Button::SetButton(int index, int x, int y, int width, int height) {
+		if (index < 0 || index >= num) {
+			return;
+		}
+		else {
+			vvpos[index] = { x, y, width, height };
+		}
 	}
 
 	void Button::AddButton(int x, int y, int width, int height) {

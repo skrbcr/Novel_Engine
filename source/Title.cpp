@@ -19,15 +19,17 @@ namespace Game {
 		width_hajime = GetDrawStringWidthToHandle("はじめから", static_cast<int>(strlen("はじめから")), font6);
 		width_tuduki = GetDrawStringWidthToHandle("つづきから", static_cast<int>(strlen("つづきから")), font6);
 
+		button_title = Button(2);
 		button_title.SetGroup(1, 0);
-		button_title.AddButton((WIDTH - width_hajime) / 2, 518, width_hajime, 50);
-		button_title.AddButton((WIDTH - width_tuduki) / 2, 595, width_tuduki, 50);
+		button_title.SetButton(0, (WIDTH - width_hajime) / 2, 518, width_hajime, 50);
+		button_title.SetButton(1, (WIDTH - width_tuduki) / 2, 595, width_tuduki, 50);
 
+		button_load = Button(4);
 		button_load.SetGroup(1, 0, 0xCCCCFF);
-		button_load.AddButton(160, 230, 960, 85);
-		button_load.AddButton(160, 330, 960, 85);
-		button_load.AddButton(160, 430, 960, 85);
-		button_load.AddButton(905, 570, GetDrawStringWidthToHandle("タイトルに戻る", static_cast<int>(strlen("タイトルに戻る")), font3) + 10, 40);
+		button_load.SetButton(0, 160, 230, 960, 85);
+		button_load.SetButton(1, 160, 330, 960, 85);
+		button_load.SetButton(2, 160, 430, 960, 85);
+		button_load.SetButton(3, 905, 570, GetDrawStringWidthToHandle("タイトルに戻る", static_cast<int>(strlen("タイトルに戻る")), font3) + 10, 40);
 	}
 
 	int Title::Main() {
@@ -159,8 +161,6 @@ namespace Game {
 			for (int i = 0; i < 3; ++i) {
 				if (saveData[i].saveCount != 0) {
 					struct tm local;
-					time_t timer = time(NULL);
-					//localtime_s(&local, &timer);
 					localtime_s(&local, &saveData[i].saveTime);
 					int year = static_cast<long long>(local.tm_year) + 1900;
 					int month = local.tm_mon + 1;
@@ -168,15 +168,12 @@ namespace Game {
 					int hour = local.tm_hour;
 					int min = local.tm_min;
 					string strMin = "";
-					//char min2[3];
 					if (min < 10) {
 						strMin = "0";
 						strMin += std::to_string(min);
-						//sprintf_s(min2, 3, "0%d", min);
 					}
 					else {
 						strMin = std::to_string(min);
-						//sprintf_s(min2, 3, "%d", min);
 					}
 					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
@@ -237,16 +234,20 @@ namespace Game {
 				if (saveData[i].saveCount != 0) {
 					struct tm local;
 					localtime_s(&local, &saveData[i].saveTime);
-					int year = local.tm_year + 1900;
+					int year = static_cast<long long>(local.tm_year) + 1900;
 					int month = local.tm_mon + 1;
 					int day = local.tm_mday;
 					int hour = local.tm_hour;
 					int min = local.tm_min;
-					char min2[3];
-					if (min < 10) sprintf_s(min2, 3, "0%d", min);
-					else sprintf_s(min2, 3, "%d", min);
-
-					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, min2, saveData[i].saveCount);
+					string strMin = "";
+					if (min < 10) {
+						strMin = "0";
+						strMin += std::to_string(min);
+					}
+					else {
+						strMin = std::to_string(min);
+					}
+					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
 			}
 
