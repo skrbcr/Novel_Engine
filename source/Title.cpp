@@ -47,15 +47,49 @@ namespace Game {
 				for (int i = 0; i < MAX_SAVE; ++i) {
 					ifs = std::ifstream("save/save" + std::to_string(i + 1) + ".dat", std::ios::binary);
 					if (ifs) {
-						ifs.read(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
+						try {
+							ifs >> js_saveFile[i];
+						}
+						catch (...) {
+							// エラー時の処理
+							return;
+						}
+						//ifs.read(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
 						ifs.close();
 						//if (strcmp(saveData[i].strheader, GAME_HEADER) && strcmp(saveData[i].strgm, GAME_NAME)) {
-						opt_title = 1;
-						button_title.SetSelection(1);
 						//}
 						//else {
 						//	saveData[i] = SaveData();
 						//}
+
+						// セーブデータの読み込み処理
+						saveData[i] = SaveData();
+						if (js_saveFile[i]["header"]["soft"]["name"].is_string()) {
+							if (js_saveFile[i]["header"]["soft"]["name"] == u8"skrbcr_novel") {
+								if (js_saveFile[i]["save"].is_object()) {
+									if (js_saveFile[i]["save"]["time"].is_number_integer()) {
+										saveData[i].saveTime = static_cast<time_t>(js_saveFile[i]["save"]["time"]);
+									}
+									if (js_saveFile[i]["save"]["count"].is_number_integer()) {
+										saveData[i].saveCount = js_saveFile[i]["save"]["count"];
+									}
+									if (js_saveFile[i]["save"]["data"]["index_place"].is_number_integer()) {
+										saveData[i].index_place = js_saveFile[i]["save"]["data"]["index_place"];
+									}
+									if (js_saveFile[i]["save"]["data"]["flag"].is_array()) {
+										if (js_saveFile[i]["save"]["data"]["flag"].size() == FLAG_MAX) {
+											for (int j = 0; j < FLAG_MAX; ++j) {
+												if (js_saveFile[i]["save"]["data"]["flag"][j].is_boolean()) {
+													saveData[i].flag[j] = js_saveFile[i]["save"]["data"]["flag"][j];
+												}
+											}
+										}
+									}
+								}
+								opt_title = 1;
+								button_title.SetSelection(1);
+							}
+						}
 					}
 				}
 			}
