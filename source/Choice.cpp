@@ -41,9 +41,10 @@ namespace Game {
 		width += 10;
 
 		// ƒ{ƒ^ƒ“‚ğİ’è
+		button = Button(num);
 		button.SetGroup(1, 0);
 		for (int i = 0; i < num; ++i) {
-			button.AddButton(DLGBOX_LEFT + DLGBOX_WIDTH - width - 20, DLGBOX_TOP - 40 - 50 * (num - i), width, 45);
+			button.SetButton(i, DLGBOX_LEFT + DLGBOX_WIDTH - width - 20, DLGBOX_TOP - 40 - 50 * (num - i), width, 45);
 		}
 	}
 }

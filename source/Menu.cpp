@@ -2,14 +2,16 @@
 
 namespace Game {
 	Menu::Menu() {
+		button1 = Button(4);
 		button1.SetGroup(1, 0);
-		button1.AddButton(155, 230, 155, 40);
-		button1.AddButton(155, 330, 155, 40);
-		button1.AddButton(155, 430, 155, 40);
-		button1.AddButton(905, 570, 210, 40);
+		button1.SetButton(0, 155, 230, 155, 40);
+		button1.SetButton(1, 155, 330, 155, 40);
+		button1.SetButton(2, 155, 430, 155, 40);
+		button1.SetButton(3, 905, 570, 210, 40);
+		button2 = Button(2);
 		button2.SetGroup(0, 1);
-		button2.AddButton(560, 400, 68, 40);
-		button2.AddButton(650, 400, 97, 40);
+		button2.SetButton(0, 560, 400, 68, 40);
+		button2.SetButton(1, 650, 400, 97, 40);
 		button2.SetSelection(1);
 	}
 

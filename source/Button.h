@@ -17,16 +17,20 @@ namespace Game {
 		int fcounter = 0;			// フレームカウンタ
 		int alpha = 0;				// アルファ値
 
-		//bool onFreeze = false;
-
 		vector<vector<int>> vvpos;
 
 		color_t color = 0;			// ボタン色
 
 
 	public:
-		Button() {
-			vvpos = vector<vector<int>>(0, vector<int>(4));
+		Button(int num = 0) {
+			vvpos = vector<vector<int>>(num, vector<int>(4));
+			index = 0;
+			this->num = num;
+			span_ver = 0;
+			span_hol = 0;
+			fcounter = 0;
+			alpha = 0;
 		}
 
 		/// <summary>
@@ -38,7 +42,17 @@ namespace Game {
 		void SetGroup(int span_ver, int span_hol, color_t color = 0xDDDDDD);
 
 		/// <summary>
-		/// ボタンを追加
+		/// ボタンを設定
+		/// </summary>
+		/// <param name="index">ボタン番号</param>
+		/// <param name="x">左上x座標</param>
+		/// <param name="y">左上y座標</param>
+		/// <param name="width">ボタン幅</param>
+		/// <param name="height">ボタン高さ</param>
+		void SetButton(int index, int x, int y, int width, int height);
+
+		/// <summary>
+		/// ボタンを追加（最後尾に追加）
 		/// </summary>
 		/// <param name="x">左上x座標</param>
 		/// <param name="y">左上y座標</param>
