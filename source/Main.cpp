@@ -1,4 +1,4 @@
-// skrbcr/Novel_Engine ver.0.1.0（https://github.com/skrbcr/Novel_Engine）
+// skrbcr/Novel_Engine（https://github.com/skrbcr/Novel_Engine）
 // DXライブラリ使用のノベルゲームエンジン？のアルファ版
 // 
 // 配布ソースコードの一部に、以下のライブラリを含みます
