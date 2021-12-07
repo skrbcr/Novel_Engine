@@ -15,7 +15,9 @@ using nlohmann::json;
 //using color_t = unsigned int;		// êF
 
 namespace Game {
-	constexpr char GAME_CLASS[] = "skrb_novel";
+	//constexpr char GAME_CLASS[] = "skrb_novel";
+	constexpr char SOFT_NAME[] = "skrb_novel";
+	constexpr char SOFT_VER[] = "version 0.1.0";
 
 	extern string strGameName;
 	extern string strGameVersion;

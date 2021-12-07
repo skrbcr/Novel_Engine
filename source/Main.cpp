@@ -46,7 +46,7 @@ namespace Game {
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	/* ウィンドウ設定 */
 	//SetWindowText("Novel Game");				// ウィンドウ名
-	SetMainWindowClassName(Game::GAME_CLASS);	// ウィンドウクラス名を登録
+	SetMainWindowClassName(Game::SOFT_NAME);	// ウィンドウクラス名を登録
 	SetAlwaysRunFlag(TRUE);						// 非アクティブ時も実行
 	//SetWindowIconID(1);							// アイコン（.icoファイルとicon.rcが必要。引数はicon.rcで設定した任意のアイコンID）
 	SetOutApplicationLogValidFlag(FALSE);		// ログを出力しない

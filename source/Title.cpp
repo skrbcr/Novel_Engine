@@ -45,27 +45,21 @@ namespace Game {
 				// セーブデータ読み込み
 				std::ifstream ifs;
 				for (int i = 0; i < MAX_SAVE; ++i) {
-					ifs = std::ifstream("save/save" + std::to_string(i + 1) + ".dat", std::ios::binary);
+					ifs = std::ifstream("save/save" + std::to_string(i + 1) + ".json");
 					if (ifs) {
 						try {
 							ifs >> js_saveFile[i];
 						}
 						catch (...) {
 							// エラー時の処理
-							return;
+							
 						}
-						//ifs.read(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
 						ifs.close();
-						//if (strcmp(saveData[i].strheader, GAME_HEADER) && strcmp(saveData[i].strgm, GAME_NAME)) {
-						//}
-						//else {
-						//	saveData[i] = SaveData();
-						//}
 
 						// セーブデータの読み込み処理
 						saveData[i] = SaveData();
 						if (js_saveFile[i]["header"]["soft"]["name"].is_string()) {
-							if (js_saveFile[i]["header"]["soft"]["name"] == u8"skrbcr_novel") {
+							if (js_saveFile[i]["header"]["soft"]["name"] == SOFT_NAME) {
 								if (js_saveFile[i]["save"].is_object()) {
 									if (js_saveFile[i]["save"]["time"].is_number_integer()) {
 										saveData[i].saveTime = static_cast<time_t>(js_saveFile[i]["save"]["time"]);
