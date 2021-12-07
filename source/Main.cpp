@@ -30,8 +30,11 @@ namespace Game {
 	// 各種ハンドルの削除
 	static void DeleteHandles();
 
-	// Config.json の読み込み・タイトル画面も設定
+	// Config.jsonの読み込み・ウィンドウの設定
 	static void LoadConfig();
+
+	// Config.json の適用
+	static void SetConfig();
 
 	// ゲームのメインループ処理
 	static void GameMain();
@@ -45,7 +48,8 @@ namespace Game {
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	/* ウィンドウ設定 */
-	//SetWindowText("Novel Game");				// ウィンドウ名
+	Game::LoadConfig();
+	SetWindowText(Game::strGameName.c_str());
 	SetMainWindowClassName(Game::SOFT_NAME);	// ウィンドウクラス名を登録
 	SetAlwaysRunFlag(TRUE);						// 非アクティブ時も実行
 	//SetWindowIconID(1);							// アイコン（.icoファイルとicon.rcが必要。引数はicon.rcで設定した任意のアイコンID）
@@ -68,7 +72,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Game::effect = Game::Effect();
 	Game::bgm = Game::BGM();
 
-	Game::LoadConfig();
+	Game::SetConfig();
 
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0) {
 		Game::SetKey(key);
@@ -95,6 +99,8 @@ namespace Game {
 	static Place place;			// 場所インスタンス
 	static Choice choice;		// 選択インスタンス
 
+	static json js_cfg = json();		// Config.json
+
 	void MakeHandles() {
 		// フォント作成
 		font1 = CreateFontToHandle("游明朝", 24, -1, DX_FONTTYPE_ANTIALIASING_16X16);
@@ -118,47 +124,48 @@ namespace Game {
 
 	void LoadConfig() {
 		ifstream ifs = ifstream("data/data/config.json");
-		json js = json();
 		if (ifs) {
 			try {
-				ifs >> js;
+				ifs >> js_cfg;
 			}
 			catch (...) {
 				ErrorLog(ER_JSON_SYNTAX, "data/data/config.json");
 				return;
 			}
-			ifs.close();
 		}
 		else {
 			ErrorLog(ER_JSON_OPEN, "data/data/config.json");
 			return;
 		}
+
 		// ゲームタイトルの設定
-		if (js["game"].is_object()) {
-			if (js["game"]["name"].is_string()) {
-				strGameName = utf8_to_ansi(js["game"]["name"]);
-				SetWindowTextA(strGameName.c_str());
+		if (js_cfg["game"].is_object()) {
+			if (js_cfg["game"]["name"].is_string()) {
+				strGameName = utf8_to_ansi(js_cfg["game"]["name"]);
 			}
-			if (js["game"]["version"].is_string()) {
-				strGameVersion = utf8_to_ansi(js["game"]["version"]);
+			if (js_cfg["game"]["version"].is_string()) {
+				strGameVersion = utf8_to_ansi(js_cfg["game"]["version"]);
 			}
 		}
+	}
+
+	void SetConfig() {
 		// システムSEの読み込み
-		if (js["se"].is_object()) {
-			if (js["se"]["cursor"].is_string()) {
-				sh_cursor = LoadSoundMem(utf8_to_ansi(js["se"]["cursor"]).c_str());
+		if (js_cfg["se"].is_object()) {
+			if (js_cfg["se"]["cursor"].is_string()) {
+				sh_cursor = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["cursor"]).c_str());
 			}
-			if (js["se"]["decide"].is_string()) {
-				sh_decide = LoadSoundMem(utf8_to_ansi(js["se"]["decide"]).c_str());
+			if (js_cfg["se"]["decide"].is_string()) {
+				sh_decide = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["decide"]).c_str());
 			}
-			if (js["se"]["cancel"].is_string()) {
-				sh_cancel = LoadSoundMem(utf8_to_ansi(js["se"]["cancel"]).c_str());
+			if (js_cfg["se"]["cancel"].is_string()) {
+				sh_cancel = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["cancel"]).c_str());
 			}
-			if (js["se"]["success"].is_string()) {
-				sh_success = LoadSoundMem(utf8_to_ansi(js["se"]["success"]).c_str());
+			if (js_cfg["se"]["success"].is_string()) {
+				sh_success = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["success"]).c_str());
 			}
-			if (js["se"]["fail"].is_string()) {
-				sh_fail = LoadSoundMem(utf8_to_ansi(js["se"]["fail"]).c_str());
+			if (js_cfg["se"]["fail"].is_string()) {
+				sh_fail = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["fail"]).c_str());
 			}
 		}
 
@@ -167,24 +174,22 @@ namespace Game {
 		string strBgm = "";
 		double bgmVol = 1.0;
 		bool showVer = false;
-		if (js["title"].is_object()) {
-			if (js["title"]["back"].is_array()) {
-				if (js["title"]["back"][0].is_string()) {
-					strBack = js["title"]["back"][0];
-					strBack = utf8_to_ansi(strBack);
+		if (js_cfg["title"].is_object()) {
+			if (js_cfg["title"]["back"].is_array()) {
+				if (js_cfg["title"]["back"][0].is_string()) {
+					strBack = utf8_to_ansi(js_cfg["title"]["back"][0]);
 				}
 			}
-			if (js["title"]["bgm"].is_array()) {
-				if (js["title"]["bgm"][0].is_string()) {
-					strBgm = js["title"]["bgm"][0];
-					strBgm = utf8_to_ansi(strBgm);
+			if (js_cfg["title"]["bgm"].is_array()) {
+				if (js_cfg["title"]["bgm"][0].is_string()) {
+					strBgm = utf8_to_ansi(js_cfg["title"]["bgm"][0]);
 				}
-				if (js["title"]["bgm"][1].is_number()) {
-					bgmVol = js["title"]["bgm"][1];
+				if (js_cfg["title"]["bgm"][1].is_number()) {
+					bgmVol = js_cfg["title"]["bgm"][1];
 				}
 			}
-			if (js["title"]["version"].is_boolean()) {
-				showVer = js["title"]["version"];
+			if (js_cfg["title"]["version"].is_boolean()) {
+				showVer = js_cfg["title"]["version"];
 			}
 		}
 		title = Title(strBack, strBgm, bgmVol, showVer);
