@@ -29,6 +29,25 @@ namespace Game {
 			saveData[i].flag[j] = flag[j];
 		}
 
+		// セーブファイル作成
+		try {
+			js_saveFile[i] = json::object();
+			js_saveFile[i]["header"]["soft"]["name"] = ansi_to_utf8(SOFT_NAME);
+			js_saveFile[i]["header"]["soft"]["ver"] = ansi_to_utf8(SOFT_VER);
+			js_saveFile[i]["header"]["game"]["name"] = ansi_to_utf8(strGameName);
+			js_saveFile[i]["header"]["game"]["ver"] = ansi_to_utf8(strGameVersion);
+			js_saveFile[i]["save"]["time"] = saveData[i].saveTime;
+			js_saveFile[i]["save"]["count"] = saveData[i].saveCount;
+			js_saveFile[i]["save"]["data"]["index_place"] = saveData[i].index_place;
+			for (int j = 0; j < FLAG_MAX; ++j) {
+				js_saveFile[i]["save"]["data"]["flag"][j] = saveData[i].flag[j];
+			}
+		}
+		catch (...) {
+			// エラー処理
+			return -1;
+		}
+
 		// ファイル書き込み
 		struct stat statBuf;
 		if (stat("save", &statBuf) != 0) {
@@ -36,10 +55,10 @@ namespace Game {
 				return -1;
 			}
 		}
-
-		ofs = std::ofstream("save/save" + std::to_string(i + 1) + ".dat", std::ios::binary);
+		ofs = std::ofstream("save/save" + std::to_string(i + 1) + ".json");
 		if (ofs) {
-			ofs.write(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
+			ofs << js_saveFile[i];
+			//ofs.write(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
 			ofs.close();
 			return 0;
 		}

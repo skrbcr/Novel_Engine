@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include <fstream>
+#include "nlohmann/json.hpp"
 #include "DxLib.h"
 #include "Effect.h"
 #include "BGM.h"
@@ -10,10 +11,13 @@ using std::string;
 using std::string_view;
 using std::ofstream;
 using std::endl;
+using nlohmann::json;
 //using color_t = unsigned int;		// 色
 
 namespace Game {
-	constexpr char GAME_CLASS[] = "skrb_novel";
+	//constexpr char GAME_CLASS[] = "skrb_novel";
+	constexpr char SOFT_NAME[] = "skrb_novel";
+	constexpr char SOFT_VER[] = "version 0.1.0";
 
 	extern string strGameName;
 	extern string strGameVersion;
@@ -47,9 +51,9 @@ namespace Game {
 
 	struct SaveData
 	{
-		const char* strheader = GAME_CLASS;		// ヘッダー文字列
-		const char* strgm = strGameName.c_str();			// ゲーム名
-		const char* strver = strGameVersion.c_str();		// ヴァージョン
+		//const char* strheader = GAME_CLASS;		// ヘッダー文字列
+		//const char* strgm = strGameName.c_str();			// ゲーム名
+		//const char* strver = strGameVersion.c_str();		// ヴァージョン
 		time_t saveTime = 0;				// セーブ日時
 		int saveCount = 0;					// セーブ回数
 		int index_place = 0;				// Placeのindex
@@ -57,6 +61,7 @@ namespace Game {
 	};
 
 	__declspec(selectany) struct SaveData saveData[3] = {};
+	__declspec(selectany) json js_saveFile[3] = {};
 
 	extern int font1;		// 24pxフォント
 	extern int font2;		// 18pxフォント
