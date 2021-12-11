@@ -28,7 +28,7 @@ namespace Game {
 	private:
 		//vector<CharaPos> vpos = vector<CharaPos>(0);		// 画像配置情報配列
 		vector<CharaImg> vchara = vector<CharaImg>(0);		// キャラクター画像データ配列
-		size_t nSizeVchara = 0;
+		//size_t nSizeVchara = 0;
 
 	public:
 		Character() {

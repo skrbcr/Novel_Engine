@@ -169,6 +169,21 @@ namespace Game {
 			}
 		}
 
+		// キャラクター画像
+		if (js_cfg["chara"].is_object()) {
+			if (js_cfg["chara"]["img"].is_array()) {
+				size_t n = js_cfg["chara"]["img"].size();
+				place.InitChara(n);
+				for (size_t i = 0; i < n; ++i) {
+					if (js_cfg["chara"]["img"][i].is_array() && js_cfg["chara"]["img"][i][0].is_string()
+						&& js_cfg["chara"]["img"][i][1].is_number() && js_cfg["chara"]["img"][i][2].is_number()) {
+						place.SetChara(i, js_cfg["chara"]["img"][i][0],
+							js_cfg["chara"]["img"][i][1], js_cfg["chara"]["img"][i][2]);
+					}
+				}
+			}
+		}
+
 		// タイトル画面の設定
 		string strBack = "";
 		string strBgm = "";

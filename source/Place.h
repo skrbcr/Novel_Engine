@@ -9,6 +9,7 @@
 #include "Dialog.h"
 #include "Choice.h"
 #include "Effect.h"
+#include "Character.h"
 
 using std::string;
 using std::string_view;
@@ -68,6 +69,7 @@ namespace Game {
 		int index_factor = 0;		// 現在実行中のイベントのcontentのインデックス
 		Dialog dialog = Dialog();	// ダイアログインスタンス
 		Choice choice = Choice();	// 選択肢インスタンス
+		Character chara = Character();	// キャラクタークラス
 
 	public:
 		Place() {
@@ -105,5 +107,13 @@ namespace Game {
 		/// イベント要素をセット
 		/// </summary>
 		void SetFactor();
+
+		void InitChara(size_t n) {
+			chara = Character(n);
+		}
+
+		void SetChara(size_t i, string_view strPos, int x, int y) {
+			chara.SetCharaPos(i, strPos, x, y);
+		}
 	};
 }
