@@ -2,18 +2,18 @@
 
 namespace Game {
 	/// <summary>
-	/// 
+	/// 文字数を数える
 	/// </summary>
-	/// <param name="str"></param>
-	/// <returns></returns>
+	/// <param name="str">文字列</param>
+	/// <returns>文字数(size_t)</returns>
 	static size_t strcount_sjis(string_view str);
 
 	/// <summary>
-	/// 
+	/// 先頭から、指定した文字数を抽出
 	/// </summary>
-	/// <param name="str"></param>
-	/// <param name="nCount"></param>
-	/// <returns></returns>
+	/// <param name="str">文字列</param>
+	/// <param name="nCount">文字数</param>
+	/// <returns>抽出した文字列</returns>
 	static string strextract_sjis(string_view str, size_t nCount);
 
 	int Dialog::gh_box = 0;

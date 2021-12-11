@@ -4,13 +4,16 @@ namespace Game {
 	int Choice::Main() {
 		// ”wŒi
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 245);
-		DrawBox(DLGBOX_LEFT + DLGBOX_WIDTH - width - 40, DLGBOX_TOP - 65 - 50 * num, DLGBOX_LEFT + DLGBOX_WIDTH, DLGBOX_TOP - 20, 0x007DDA, TRUE);
-		DrawBoxAA((float)(DLGBOX_LEFT + DLGBOX_WIDTH - width - 40), (float)(DLGBOX_TOP - 65 - 50 * num), (float)(DLGBOX_LEFT + DLGBOX_WIDTH), (float)(DLGBOX_TOP - 20), 0x004070, FALSE, 3.5f);
+		DrawBox(DLGBOX_LEFT + DLGBOX_WIDTH - width - 40, DLGBOX_TOP - 65 - 50 * num,
+			DLGBOX_LEFT + DLGBOX_WIDTH, DLGBOX_TOP - 20, 0x007DDA, TRUE);
+		DrawBoxAA(static_cast<float>(DLGBOX_LEFT + DLGBOX_WIDTH - width - 40), static_cast<float>(DLGBOX_TOP - 65 - 50 * num),
+			static_cast<float>(DLGBOX_LEFT + DLGBOX_WIDTH), static_cast<float>(DLGBOX_TOP - 20), 0x004070, FALSE, 3.5f);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		// ‘I‘ðŽˆ•\Ž¦
 		for (int i = 0; i < num; ++i) {
-			DrawStringToHandle(DLGBOX_LEFT + DLGBOX_WIDTH - width - 15, DLGBOX_TOP - 30 - 50 * (num - i), strOptList[i].data(), 0xFFFFFF, font1);
+			DrawStringToHandle(DLGBOX_LEFT + DLGBOX_WIDTH - width - 15, DLGBOX_TOP - 30 - 50 * (num - i),
+				strOptList[i].data(), 0xFFFFFF, font1);
 		}
 
 		count = button.Main(onMenu);

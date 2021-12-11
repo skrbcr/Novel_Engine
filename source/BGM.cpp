@@ -9,13 +9,13 @@ namespace Game {
 				//break;
 		case BGM_effct::FADE_OUT:
 			if (frame < duration) {
-				ChangeVolumeSoundMem((int)(volume * (1.0 - (double)frame / (double)duration)), sh);
+				ChangeVolumeSoundMem(static_cast<int>(volume * (1.0 - static_cast<double>(frame) / static_cast<double>(duration))), sh);
 				frame++;
 			}
 			else if (frame == duration) {
 				if (CheckSoundMem(sh) == 1) {
 					StopSoundMem(sh);
-					ChangeVolumeSoundMem((int)(volume * 1.0), sh);
+					ChangeVolumeSoundMem(static_cast<int>(volume * 1.0), sh);
 				}
 				onPlay = false;
 				effectMode = BGM_effct::NO_EFFECT;
@@ -23,7 +23,7 @@ namespace Game {
 			break;
 		case BGM_effct::FADE_IN:
 			if (frame < duration) {
-				ChangeVolumeSoundMem((int)(volume * ((double)frame / (double)duration)), sh);
+				ChangeVolumeSoundMem(static_cast<int>(volume * (static_cast<double>(frame) / static_cast<double>(duration))), sh);
 				frame++;
 			}
 			else if (frame == duration) {
@@ -100,7 +100,7 @@ namespace Game {
 	void BGM::SetGeneralVolume(double volume)
 	{
 		// Œ»Ý‚ÌBGM‚Ö”½‰f
-		this->volume = (int)(this->volume * volume / volume_gen);
+		this->volume = static_cast<int>(this->volume * volume / volume_gen);
 		ChangeVolumeSoundMem(this->volume, sh);
 
 		// ‘S‘Ì‚É”½‰f

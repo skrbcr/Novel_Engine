@@ -121,8 +121,6 @@ namespace Game {
 					HEIGHT - 30, strGameVersion.c_str(), 0x000000, font2);
 			}
 
-			//DrawGraph(62, 92, gh_logo, TRUE);
-
 			// ÉLÅ[ëÄçÏ
 			if (GetSingleUp() || GetSingleDown()) {
 				PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK);

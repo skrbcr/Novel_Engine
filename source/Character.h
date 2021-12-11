@@ -15,20 +15,11 @@ struct CharaImg
 	int y = 0;				// 画像y座標
 };
 
-//struct CharaPos
-//{
-//	string strPos = "";
-//	int x = 0;
-//	int y = 0;
-//};
-
 namespace Game {
 	class Character
 	{
 	private:
-		//vector<CharaPos> vpos = vector<CharaPos>(0);		// 画像配置情報配列
 		vector<CharaImg> vchara = vector<CharaImg>(0);		// キャラクター画像データ配列
-		//size_t nSizeVchara = 0;
 
 	public:
 		Character() {
@@ -51,11 +42,6 @@ namespace Game {
 		/// <param name="x">画像左上 x座標</param>
 		/// <param name="y">画像左上 座標</param>
 		void SetCharaPos(size_t index, string_view strPos, int x, int y);
-
-		/// <summary>
-		/// CharaImg 配列を生成
-		/// </summary>
-		//void MakeCharaImg();
 
 		/// <summary>
 		/// body 画像を設定

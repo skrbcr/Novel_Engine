@@ -12,10 +12,6 @@ namespace Game {
         vchara[index].y = y;
     }
 
-    //void Character::MakeCharaImg() {
-    //    vchara = vector<CharaImg>(nSizeVchara);
-    //}
-
     void Character::SetBody(int gh, string_view strPos) {
         for (auto& pos : vchara) {
             if (strPos == pos.strPos) {

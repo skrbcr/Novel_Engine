@@ -13,11 +13,6 @@ namespace Game {
 	constexpr int DLGBOX_TOP = 488;			// メッセージボックス上端のy座標
 	constexpr int DLGBOX_LEFT = 133;		// メッセージボックス左端のx座標
 
-	/* 定数 */
-	//constexpr int DLGM_NORMAL = 0;			// 通常
-	//constexpr int DLGM_FINISH = 1;			// 会話終了
-	//constexpr int DLGM_EFFSET = 2;			// エフェクトセット
-
 	// 文字色リスト(処理の都合上、10個まで登録可能)
 	constexpr color_t colorList[10] =
 	{ 0xFFFFFF, 0xff0000, 0xFFCCFF, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000 };
@@ -39,17 +34,24 @@ namespace Game {
 		size_t index_strCont = 0;			// 表示文字語数インデックス
 		size_t nWordContnet = (size_t)0;	// 内容文字列の語数
 
-		int fcounter = 0;
-		int mode = 0;
+		int fcounter = 0;	// フレームカウンタ
+		int mode = 0;		// 表示モード
+		static int gh_box;		// メッセージボックスの画像
 
 	public:
-		static int gh_box;			// メッセージボックスの画像
-
 		/// <summary>
-		/// Dialogクラスのコンストラクタ
+		/// コンストラクタ
 		/// </summary>
 		Dialog() {
 
+		}
+
+		/// <summary>
+		/// コンストラクタ（メッセージウィンドウ画像を指定）
+		/// </summary>
+		/// <param name="gh">メッセージウィンドウのグラフィックハンドル</param>
+		Dialog(int gh) {
+			gh_box = gh;
 		}
 
 		/// <summary>

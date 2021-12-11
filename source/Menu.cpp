@@ -44,7 +44,7 @@ namespace Game {
 			}
 		}
 		catch (...) {
-			// エラー処理
+			// エラー処理をここに入れる？
 			return -1;
 		}
 
@@ -58,7 +58,6 @@ namespace Game {
 		ofs = std::ofstream("save/save" + std::to_string(i + 1) + ".json");
 		if (ofs) {
 			ofs << js_saveFile[i];
-			//ofs.write(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
 			ofs.close();
 			return 0;
 		}
@@ -123,7 +122,8 @@ namespace Game {
 					sprintf_s(min2, 3, "%d", min);
 				}
 
-				DrawFormatStringToHandle(160, 280 + 100 * i, 0xFFFFFF, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, min2, saveData[i].saveCount);
+				DrawFormatStringToHandle(160, 280 + 100 * i, 0xFFFFFF, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回",
+					year, month, day, hour, min2, saveData[i].saveCount);
 			}
 		}
 

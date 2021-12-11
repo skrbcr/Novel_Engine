@@ -111,7 +111,7 @@ namespace Game {
 		font6 = CreateFontToHandle("游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16);
 
 		// ダイアログボックス画像読み込み
-		Dialog::gh_box = LoadGraph("data/picture/[自作]dialog.png");
+		Dialog(LoadGraph("data/picture/[自作]dialog.png"));
 	}
 
 	void DeleteHandles() {
