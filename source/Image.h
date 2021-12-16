@@ -13,10 +13,14 @@ namespace Game {
 	/// </summary>
 	enum class ImageMotionType {
 		NOMOTION,		// なし
-		MOVE_NORM,		// 移動（通常）
-		MOVE_ACCEL,		// 移動（加速・減速効果付き）
-		JUMP_HOL,		// ジャンプ（横）
-		JUMP_VER,		// ジャンプ（縦）
+		//MOVE_NORM,		// 移動（通常）
+		MOVE_NORM_X,	// 移動（通常・X方向）
+		MOVE_NORM_Y,	// 移動（通常・Y方向）
+		//MOVE_ACCEL,		// 移動（加速・減速効果付き）
+		MOVE_ACCEL_X,	// 移動（加速・減速効果付き・X方向）
+		MOVE_ACCEL_Y,	// 移動（加速・減速効果付き・Y方向）
+		JUMP_X,			// ジャンプ（X方向）
+		JUMP_Y,			// ジャンプ（Y方向）
 		ROTATION,		// 回転
 	};
 
@@ -40,14 +44,18 @@ namespace Game {
 		int frame = 0;			// 所要フレーム
 		double arg = 0.0;		// 引数
 
-		int fcounter = 0;		// フレームカウンタ
+		int _fcounter = 1;		// フレームカウンタ
+		double _arg1 = 0;		// 内部処理用引数１	
+		double _arg2 = 0;		// 内部処理用引数２
 
 		ImageMotion() {
 			x = 0;
 			y = 0;
 			frame = 0;
 			arg = 0.0;
-			fcounter = 0;
+			_fcounter = 1;
+			_arg1 = 0;
+			_arg2 = 0;
 		}
 
 		ImageMotion(ImageMotionType imType, int x, int y, int frame, double arg) {
@@ -56,7 +64,9 @@ namespace Game {
 			this->y = y;
 			this->frame = frame;
 			this->arg = arg;
-			fcounter = 0;
+			_fcounter = 1;
+			_arg1 = 0;
+			_arg2 = 0;
 		}
 	};
 
@@ -83,9 +93,11 @@ namespace Game {
 	class Image {
 	private:
 		int gh = 0;		// グラフィックハンドル
-		int x = 0;		// 描画左上X
-		int y = 0;		// 描画左上Y
-		int alpha = 0;	// 描画アルファ値
+		double x = 0;		// 描画左上X
+		double y = 0;		// 描画左上Y
+		double alpha = 0;	// 描画アルファ値
+		double rad = 0;		// 回転角度
+
 						// 描画エフェクト管理vector
 		vector<ImageMotion> vImgMotion = vector<ImageMotion>(0);
 						// モーション管理vector
@@ -100,10 +112,12 @@ namespace Game {
 			DeleteGraph(gh);
 		}
 
-		void SetImage(string_view strImgFile, int x, int y, int alpha);
+		void SetImage(string_view strImgFile, int x, int y, double alpha);
 
 		void SetMotion(ImageMotionType imType, int x, int y, int frame, int arg);
 
 		void SetEffect(ImageEffctType ieType, int frame);
+
+		void Main();
 	};
 }

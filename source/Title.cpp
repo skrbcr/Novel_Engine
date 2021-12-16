@@ -1,6 +1,9 @@
 #include "Title.h"
+#include "Image.h"
 
 namespace Game {
+	// Image テスト用
+	Image image = Image();
 	Title::Title(string_view strBackImgFile, string_view strBgmFile, double bgmVol, bool showVer) {
 		gh_back = LoadGraph(strBackImgFile.data());
 		if (gh_back == -1) {
@@ -40,8 +43,13 @@ namespace Game {
 		case 0:		// 起動時など
 			// 背景
 			DrawGraph(0, 0, gh_back, FALSE);
+			if (fcounter == 20) {
+				image.SetMotion(ImageMotionType::MOVE_ACCEL_X, 900, 200, 80, 0);
+			}
 
 			if (fcounter == 0) {
+				image.SetImage("data/picture/sakuya.png", 100, 100, 1.0);
+
 				// セーブデータ読み込み
 				std::ifstream ifs;
 				for (int i = 0; i < MAX_SAVE; ++i) {
@@ -296,6 +304,7 @@ namespace Game {
 		}
 
 		fcounter++;
+		image.Main();
 
 		return res;
 	}
