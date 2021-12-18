@@ -44,11 +44,13 @@ namespace Game {
 			// 背景
 			DrawGraph(0, 0, gh_back, FALSE);
 			if (fcounter == 20) {
-				image.SetMotion(ImageMotionType::MOVE_ACCEL_X, 900, 200, 80, 0);
+				image.SetMotion(ImageMotionType::MOVE_ACCEL_X, 300, 0, 30, 0);
+				//image.SetMotion(ImageMotionType::MOVE_NORM_Y, 0, 400, 180, 0);
 			}
 
 			if (fcounter == 0) {
 				image.SetImage("data/picture/sakuya.png", 100, 100, 1.0);
+				image.ChangeVisible(true);
 
 				// セーブデータ読み込み
 				std::ifstream ifs;

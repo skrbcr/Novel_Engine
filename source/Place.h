@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <string>
 #include <string_view>
 #include <fstream>
@@ -9,8 +10,10 @@
 #include "Dialog.h"
 #include "Choice.h"
 #include "Effect.h"
+#include "Image.h"
 #include "Character.h"
 
+using std::vector;
 using std::string;
 using std::string_view;
 using std::ifstream;
@@ -35,6 +38,8 @@ namespace Game {
 		int x_ev = 0;				// イベントで表示する画像
 		int y_ev = 0;				// イベントで表示する画像
 		int nFactor = 0;			// イベント内の項目数
+
+		vector<Image> vImage = vector<Image>();		// Image配列
 	};
 
 	/// <summary>
@@ -64,7 +69,8 @@ namespace Game {
 
 		json js = json();			// JSONファイル
 		int nEvent = 0;				// イベント数
-		Event* events = nullptr;	// イベントリスト
+		//Event* events = nullptr;	// イベントリスト
+		vector<Event> events;		// イベントリスト
 		int index_event = 0;		// 現在実行中のイベントのインデックス
 		int index_factor = 0;		// 現在実行中のイベントのcontentのインデックス
 		Dialog dialog = Dialog();	// ダイアログインスタンス
@@ -76,7 +82,9 @@ namespace Game {
 
 		}
 
-		~Place();
+		~Place() {
+
+		}
 
 	public:
 		void SetGeneral();

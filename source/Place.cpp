@@ -1,12 +1,6 @@
 #include "Place.h"
 
 namespace Game {
-	Place::~Place() {
-		if (events != nullptr) {
-			delete events;
-		}
-	}
-
 	void Place::SetGeneral() {
 		string str_file = STR_JSON_DIRECTORY;
 		str_file += "PlaceNote.json";
@@ -127,7 +121,7 @@ namespace Game {
 
 			// イベントリストの初期化
 			if (nEvent > 0) {
-				events = new Event[nEvent];
+				events = vector<Event>(nEvent);
 			}
 			else {
 				ErrorLog(ER_PLC_SET, to_string(index_place), "イベント設定に失敗。イベント数が異常です。nEvent: " + to_string(nEvent));
@@ -136,6 +130,7 @@ namespace Game {
 
 			// イベントリストの設定
 			for (int i = 0; i < nEvent; ++i) {
+				// available フラグ
 				if (js["event"][i]["available"].is_boolean()) {
 					events[i].available = js["event"][i]["available"];
 				}
@@ -143,32 +138,23 @@ namespace Game {
 					events[i].available = true;
 				}
 
-				if (js["event"][i]["object"].is_array()) {
-					events[i].gh_obj = 0;
-					events[i].x_obj = 0;
-					events[i].y_obj = 0;
-					events[i].width_obj = 0;
-					events[i].height_obj = 0;
-
-					if (js["event"][i]["object"][0].is_string()) {
-						string str = js["event"][i]["object"][0];
-						str = utf8_to_ansi(str);
-						events[i].gh_obj = LoadGraph(str.c_str());
-						if (events[i].gh_obj == -1) {
-							ErrorLog(ER_IMG_LOAD, str);
+				// Image
+				if (js["event"][i]["image"].is_array()) {
+					for (const auto& js_img : js["event"][i]["image"]) {
+						if (js_img[0].is_number_integer()) {
+							switch (static_cast<int>(js_img[0])) {
+							case 0:
+								if (js_img[1].is_string() && js_img[2].is_number_integer() && js_img[3].is_number_integer()) {
+									if (js_img[4].is_number()) {
+										events[i].vImage.push_back(Image(js_img[1], js_img[2], js_img[3], js_img[4]));
+									}
+									else {
+										events[i].vImage.push_back(Image(js_img[1], js_img[2], js_img[3], 1.0));
+									}
+								}
+								break;
+							}
 						}
-					}
-					if (js["event"][i]["object"][1].is_number()) {
-						events[i].x_obj = js["event"][i]["object"][1];
-					}
-					if (js["event"][i]["object"][2].is_number()) {
-						events[i].y_obj = js["event"][i]["object"][2];
-					}
-					if (js["event"][i]["object"][3].is_number()) {
-						events[i].width_obj = js["event"][i]["object"][3];
-					}
-					if (js["event"][i]["object"][4].is_number()) {
-						events[i].height_obj = js["event"][i]["object"][4];
 					}
 				}
 
@@ -185,20 +171,13 @@ namespace Game {
 
 		// フラグの事前処理
 		if (js["pre-flag"].is_array()) {
-			int n = static_cast<int>(js["pre-flag"].size());
-			int k, l;
-			bool b1, b2;
-			for (int i = 0; i < n; ++i) {
-				if (js["pre-flag"][i].is_array()) {
-					if (js["pre-flag"][i][0].is_number_integer() && js["pre-flag"][i][1].is_boolean()
-						&& js["pre-flag"][i][2].is_number_integer() && js["pre-flag"][i][3].is_boolean()) {
-						k = js["pre-flag"][i][0];
-						b1 = js["pre-flag"][i][1];
-						l = js["pre-flag"][i][2];
-						b2 = js["pre-flag"][i][3];
-						if (k >= 0 && k < FLAG_MAX && l >= 0 && l < nEvent) {
-							if (flag[k] == b1) {
-								events[l].available = b2;
+			for (const auto& js_flag : js["pre-flag"]) {
+				if (js_flag.is_array()) {
+					if (js_flag[0].is_number_integer() && js_flag[1].is_boolean()
+						&& js_flag[2].is_number_integer() && js_flag[3].is_boolean()) {
+						if (js_flag[0] >= 0 && js_flag[0] < FLAG_MAX && js_flag[2] >= 0 && js_flag[2] < nEvent) {
+							if (flag[js_flag[0]] == js_flag[1]) {
+								events[js_flag[2]].available = js_flag[3];
 							}
 						}
 					}
@@ -215,9 +194,9 @@ namespace Game {
 		backImg.Main();
 
 		// availableなオブジェクトの画像を描画
-		for (int i = 0; i < nEvent; ++i) {
-			if (events[i].available && events[i].gh_obj != 0 && events[i].gh_obj != -1) {
-				DrawGraph(events[i].x_obj, events[i].y_obj, events[i].gh_obj, TRUE);
+		for (const auto& ev : events) {
+			if (ev.available && ev.gh_obj != 0 && ev.gh_obj != -1) {
+				DrawGraph(ev.x_obj, ev.y_obj, ev.gh_obj, TRUE);
 			}
 		}
 
@@ -478,29 +457,5 @@ namespace Game {
 				onPlaceChange = true;
 			}
 		}
-
-		// アイテム入手
-		//if (js["event"][index_event]["content"][events[index_event].index]["item_get"].is_object()) {
-		//	string str = "";
-		//	if (js["event"][index_event]["content"][events[index_event].index]["item_get"]["name"].is_string()) {
-		//		str = js["event"][index_event]["content"][events[index_event].index]["item_get"]["name"];
-		//	}
-		//	dialog.Set("", "\\c[1]" + str + "\\c[0]を手に入れた");
-		//	useDlg = true;
-
-			// アイテム入手の内部処理
-		//}
-
-		// アイテム使用
-		//if (js["event"][index_event]["content"][events[index_event].index]["item_use"].is_object()) {
-		//	string str = "";
-		//	if (js["event"][index_event]["content"][events[index_event].index]["item_use"]["name"].is_string()) {
-		//		str = js["event"][index_event]["content"][events[index_event].index]["item_use"]["name"];
-		//	}
-		//	dialog.Set("", "\\c[1]" + str + "\\c[0]を使った");
-		//	useDlg = true;
-
-			// アイテム使用の内部処理
-		//}
 	}
 }

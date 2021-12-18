@@ -39,34 +39,43 @@ namespace Game {
 	struct ImageMotion {
 								// モーションの種類
 		ImageMotionType imType = ImageMotionType::NOMOTION;
-		int x = 0;				// X座標
-		int y = 0;				// Y座標
+		double x = 0;			// X座標
+		double y = 0;			// Y座標
 		int frame = 0;			// 所要フレーム
 		double arg = 0.0;		// 引数
 
 		int _fcounter = 1;		// フレームカウンタ
 		double _arg1 = 0;		// 内部処理用引数１	
 		double _arg2 = 0;		// 内部処理用引数２
+		bool _enternal = false;	// 永続フラグ
 
 		ImageMotion() {
-			x = 0;
-			y = 0;
+			x = 0.0;
+			y = 0.0;
 			frame = 0;
 			arg = 0.0;
 			_fcounter = 1;
-			_arg1 = 0;
-			_arg2 = 0;
+			_arg1 = 0.0;
+			_arg2 = 0.0;
+			_enternal = false;
 		}
 
-		ImageMotion(ImageMotionType imType, int x, int y, int frame, double arg) {
+		ImageMotion(ImageMotionType imType, double x, double y, int frame, double arg) {
 			this->imType = imType;
 			this->x = x;
 			this->y = y;
 			this->frame = frame;
 			this->arg = arg;
 			_fcounter = 1;
-			_arg1 = 0;
-			_arg2 = 0;
+			_arg1 = 0.0;
+			_arg2 = 0.0;
+
+			if (this->frame == -1) {
+				_enternal = true;
+			}
+			else {
+				_enternal = false;
+			}
 		}
 	};
 
@@ -92,11 +101,12 @@ namespace Game {
 
 	class Image {
 	private:
-		int gh = 0;		// グラフィックハンドル
-		double x = 0;		// 描画左上X
-		double y = 0;		// 描画左上Y
-		double alpha = 0;	// 描画アルファ値
-		double rad = 0;		// 回転角度
+		int gh = 0;				// グラフィックハンドル
+		double x = 0;			// 描画左上X
+		double y = 0;			// 描画左上Y
+		double alpha = 0;		// 描画アルファ値
+		double rad = 0;			// 回転角度
+		bool onShow = false;	// 表示フラグ
 
 						// 描画エフェクト管理vector
 		vector<ImageMotion> vImgMotion = vector<ImageMotion>(0);
@@ -112,12 +122,24 @@ namespace Game {
 			DeleteGraph(gh);
 		}
 
+		Image(string_view strImgFile, int x, int y, double alpha) {
+			SetImage(strImgFile, x, y, alpha);
+		}
+
 		void SetImage(string_view strImgFile, int x, int y, double alpha);
 
 		void SetMotion(ImageMotionType imType, int x, int y, int frame, int arg);
 
 		void SetEffect(ImageEffctType ieType, int frame);
 
-		void Main();
+		/// <summary>
+		/// 画像のメイン処理
+		/// </summary>
+		/// <returns>true:効果継続中 false:効果なし</returns>
+		bool Main();
+
+		void ChangeVisible(bool flag) {
+			onShow = flag;
+		}
 	};
 }
