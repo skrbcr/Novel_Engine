@@ -76,7 +76,6 @@ namespace Game {
 
 			if (js["back"][0].is_string()) {
 				string str = js["back"][0];
-				//str = utf8_to_ansi(str);
 				gh_back = LoadGraph(str.c_str());
 				if (gh_back == -1) {
 					ErrorLog(ER_IMG_LOAD, str);
@@ -100,7 +99,6 @@ namespace Game {
 
 			if (js["bgm"][0].is_string()) {
 				string str = js["bgm"][0];
-				//str = utf8_to_ansi(str);
 				sh_bgm = LoadSoundMem(str.c_str());
 			}
 			if (js["bgm"][1].is_boolean()) {
@@ -360,11 +358,9 @@ namespace Game {
 			string content = "";
 			if (js["event"][index_event]["content"][index_factor]["dialog"][0].is_string()) {
 				speaker = js["event"][index_event]["content"][index_factor]["dialog"][0];
-				//speaker = utf8_to_ansi(speaker);
 			}
 			if (js["event"][index_event]["content"][index_factor]["dialog"][1].is_string()) {
 				content = js["event"][index_event]["content"][index_factor]["dialog"][1];
-				//content = utf8_to_ansi(content);
 			}
 			dialog.Set(speaker, content);
 			useDlg = true;
@@ -374,7 +370,6 @@ namespace Game {
 		if (js["event"][index_event]["content"][index_factor]["choice"].is_object()) {
 			if (js["event"][index_event]["content"][index_factor]["choice"]["text"].is_string()) {
 				string str = js["event"][index_event]["content"][index_factor]["choice"]["text"];
-				//dialog.Set("", utf8_to_ansi(str));
 				dialog.Set("", str);
 			}
 			if (js["event"][index_event]["content"][index_factor]["choice"]["option"].is_array()) {
@@ -383,8 +378,7 @@ namespace Game {
 				for (int i = 0; i < n; ++i) {
 					if (js["event"][index_event]["content"][index_factor]["choice"]["option"][i].is_array()
 						&& js["event"][index_event]["content"][index_factor]["choice"]["option"][i][0].is_string()) {
-						string str = js["event"][index_event]["content"][index_factor]["choice"]["option"][i][0];
-						//vstr[i] = utf8_to_ansi(str);
+						vstr[i] = js["event"][index_event]["content"][index_factor]["choice"]["option"][i][0];
 					}
 				}
 				choice.Set(vstr);

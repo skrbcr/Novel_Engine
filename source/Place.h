@@ -4,7 +4,6 @@
 #include <string_view>
 #include <fstream>
 #include "nlohmann/json.hpp"
-//#include "javacommons/strconv.h"
 #include "Global.h"
 #include "BackImage.h"
 #include "Dialog.h"
