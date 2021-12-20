@@ -19,8 +19,8 @@ namespace Game {
 
 		showVerFlag = showVer;
 
-		width_hajime = GetDrawStringWidthToHandle("‚Í‚¶‚ß‚©‚ç", static_cast<int>(strlen("‚Í‚¶‚ß‚©‚ç")), font6);
-		width_tuduki = GetDrawStringWidthToHandle("‚Â‚Ã‚«‚©‚ç", static_cast<int>(strlen("‚Â‚Ã‚«‚©‚ç")), font6);
+		width_hajime = GetDrawStringWidthToHandle(reinterpret_cast<const TCHAR*>(u8"‚Í‚¶‚ß‚©‚ç"), static_cast<int>(strlen(reinterpret_cast<const TCHAR*>(u8"‚Í‚¶‚ß‚©‚ç"))), font6);
+		width_tuduki = GetDrawStringWidthToHandle(reinterpret_cast<const TCHAR*>(u8"‚Â‚Ã‚«‚©‚ç"), static_cast<int>(strlen(reinterpret_cast<const TCHAR*>(u8"‚Â‚Ã‚«‚©‚ç"))), font6);
 
 		button_title = Button(2);
 		button_title.SetGroup(1, 0);
@@ -122,8 +122,8 @@ namespace Game {
 			DrawBoxAA((WIDTH - 250) / 2, 500, (WIDTH + 250) / 2, 660, 0xAAAAAA, FALSE, 2.f);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			button_title.Main(false);
-			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, "‚Í‚¶‚ß‚©‚ç", 0x000000, font6);
-			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, "‚Â‚Ã‚«‚©‚ç", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, reinterpret_cast<const TCHAR*>(u8"‚Í‚¶‚ß‚©‚ç"), 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, reinterpret_cast<const TCHAR*>(u8"‚Â‚Ã‚«‚©‚ç"), 0x000000, font6);
 
 			// ƒo[ƒWƒ‡ƒ“î•ñ
 			if (showVerFlag) {

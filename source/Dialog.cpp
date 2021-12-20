@@ -25,7 +25,8 @@ namespace Game {
 		status = 0;
 		strContDisp = "";
 		index_strCont = 0;
-		nWordContnet = strcount_sjis(strContent);
+		//nWordContnet = strcount_sjis(strContent);
+		nWordContnet = strcount_utf8(strContent.c_str());
 		fcounter = 0;
 	}
 
@@ -45,7 +46,8 @@ namespace Game {
 				index_strCont += 2;
 			}
 			if (index_strCont <= nWordContnet) {
-				strContDisp = strextract_sjis(strContent, index_strCont);
+				//strContDisp = strextract_sjis(strContent, index_strCont);
+				strContDisp = strextract_utf8(strContent.c_str(), index_strCont);
 				fcounter++;
 			}
 			else {
