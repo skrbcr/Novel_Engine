@@ -19,8 +19,8 @@ namespace Game {
 
 		showVerFlag = showVer;
 
-		width_hajime = GetDrawStringWidthToHandle("はじめから", static_cast<int>(strlen("はじめから")), font6);
-		width_tuduki = GetDrawStringWidthToHandle("つづきから", static_cast<int>(strlen("つづきから")), font6);
+		width_hajime = GetDrawStringWidthToHandle((const char*)u8"はじめから", static_cast<int>(strlen((const char*)u8"はじめから")), font6);
+		width_tuduki = GetDrawStringWidthToHandle((const char*)u8"つづきから", static_cast<int>(strlen((const char*)u8"つづきから")), font6);
 
 		button_title = Button(2);
 		button_title.SetGroup(1, 0);
@@ -32,7 +32,7 @@ namespace Game {
 		button_load.SetButton(0, 160, 230, 960, 85);
 		button_load.SetButton(1, 160, 330, 960, 85);
 		button_load.SetButton(2, 160, 430, 960, 85);
-		button_load.SetButton(3, 905, 570, GetDrawStringWidthToHandle("タイトルに戻る", static_cast<int>(strlen("タイトルに戻る")), font3) + 10, 40);
+		button_load.SetButton(3, 905, 570, GetDrawStringWidthToHandle((const char*)u8"タイトルに戻る", static_cast<int>(strlen((const char*)u8"タイトルに戻る")), font3) + 10, 40);
 	}
 
 	int Title::Main() {
@@ -122,8 +122,8 @@ namespace Game {
 			DrawBoxAA((WIDTH - 250) / 2, 500, (WIDTH + 250) / 2, 660, 0xAAAAAA, FALSE, 2.f);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			button_title.Main(false);
-			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, "はじめから", 0x000000, font6);
-			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, "つづきから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, (const char*)u8"はじめから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, (const char*)u8"つづきから", 0x000000, font6);
 
 			// バージョン情報
 			if (showVerFlag) {
@@ -187,12 +187,12 @@ namespace Game {
 			}
 
 			// 文字描画
-			DrawStringToHandle(430, 160, "～ロードするファイルを選択～", 0x000000, font3);
-			DrawStringToHandle(160, 240, "・セーブ１", 0x000000, font3);
-			DrawStringToHandle(160, 340, "・セーブ２", 0x000000, font3);
-			DrawStringToHandle(160, 440, "・セーブ３", 0x000000, font3);
+			DrawStringToHandle(430, 160, (const char*)u8"～ロードするファイルを選択～", 0x000000, font3);
+			DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0x000000, font3);
+			DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0x000000, font3);
+			DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0x000000, font3);
 			DrawLine(160, 550, 1120, 550, 0x000000);
-			DrawStringToHandle(910, 580, "タイトルに戻る", 0x000000, font3);
+			DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0x000000, font3);
 
 			for (int i = 0; i < 3; ++i) {
 				if (saveData[i].saveCount != 0) {
@@ -211,7 +211,7 @@ namespace Game {
 					else {
 						strMin = std::to_string(min);
 					}
-					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
+					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
 			}
 			break;
@@ -225,8 +225,8 @@ namespace Game {
 			DrawBoxAA((WIDTH - 250) / 2, 500, (WIDTH + 250) / 2, 660, 0xAAAAAA, FALSE, 2.f);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			button_title.Main(true);
-			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, "はじめから", 0x000000, font6);
-			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, "つづきから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, (const char*)u8"はじめから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, (const char*)u8"つづきから", 0x000000, font6);
 
 			// バージョン情報
 			if (showVerFlag) {
@@ -260,12 +260,12 @@ namespace Game {
 			button_load.Main(true);
 
 			// 文字描画
-			DrawStringToHandle(430, 160, "～ロードするファイルを選択～", 0x000000, font3);
-			DrawStringToHandle(160, 240, "・セーブ１", 0x000000, font3);
-			DrawStringToHandle(160, 340, "・セーブ２", 0x000000, font3);
-			DrawStringToHandle(160, 440, "・セーブ３", 0x000000, font3);
+			DrawStringToHandle(430, 160, (const char*)u8"～ロードするファイルを選択～", 0x000000, font3);
+			DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0x000000, font3);
+			DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0x000000, font3);
+			DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0x000000, font3);
 			DrawLine(160, 550, 1120, 550, 0x000000);
-			DrawStringToHandle(910, 580, "タイトルに戻る", 0x000000, font3);
+			DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0x000000, font3);
 			for (int i = 0; i < 3; ++i) {
 				if (saveData[i].saveCount != 0) {
 					struct tm local;
@@ -283,7 +283,7 @@ namespace Game {
 					else {
 						strMin = std::to_string(min);
 					}
-					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
+					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
 			}
 
@@ -306,7 +306,7 @@ namespace Game {
 		}
 
 		fcounter++;
-		image.Main();
+		//image.Main();
 
 		return res;
 	}

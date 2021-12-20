@@ -32,10 +32,10 @@ namespace Game {
 		// セーブファイル作成
 		try {
 			js_saveFile[i] = json::object();
-			js_saveFile[i]["header"]["soft"]["name"] = ansi_to_utf8(SOFT_NAME);
-			js_saveFile[i]["header"]["soft"]["ver"] = ansi_to_utf8(SOFT_VER);
-			js_saveFile[i]["header"]["game"]["name"] = ansi_to_utf8(strGameName);
-			js_saveFile[i]["header"]["game"]["ver"] = ansi_to_utf8(strGameVersion);
+			js_saveFile[i]["header"]["soft"]["name"] = SOFT_NAME;
+			js_saveFile[i]["header"]["soft"]["ver"] = SOFT_VER;
+			js_saveFile[i]["header"]["game"]["name"] = strGameName;
+			js_saveFile[i]["header"]["game"]["ver"] = strGameVersion;
 			js_saveFile[i]["save"]["time"] = saveData[i].saveTime;
 			js_saveFile[i]["save"]["count"] = saveData[i].saveCount;
 			js_saveFile[i]["save"]["data"]["index_place"] = saveData[i].index_place;
@@ -97,11 +97,11 @@ namespace Game {
 		opt = button1.Main(onTitle);
 
 		// 文字描画
-		DrawStringToHandle(560, 160, "～セーブ～", 0xFFFFFF, font3);
-		DrawStringToHandle(160, 240, "・セーブ１", 0xFFFFFF, font3);
-		DrawStringToHandle(160, 340, "・セーブ２", 0xFFFFFF, font3);
-		DrawStringToHandle(160, 440, "・セーブ３", 0xFFFFFF, font3);
-		DrawStringToHandle(910, 580, "タイトルに戻る", 0xFFFFFF, font3);
+		DrawStringToHandle(560, 160, (const char*)u8"～セーブ～", 0xFFFFFF, font3);
+		DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0xFFFFFF, font3);
+		DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0xFFFFFF, font3);
+		DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0xFFFFFF, font3);
+		DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0xFFFFFF, font3);
 
 		DrawLine(160, 550, 1120, 550, 0xFFFFFF);
 
@@ -122,7 +122,7 @@ namespace Game {
 					sprintf_s(min2, 3, "%d", min);
 				}
 
-				DrawFormatStringToHandle(160, 280 + 100 * i, 0xFFFFFF, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回",
+				DrawFormatStringToHandle(160, 280 + 100 * i, 0xFFFFFF, font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回",
 					year, month, day, hour, min2, saveData[i].saveCount);
 			}
 		}
@@ -160,9 +160,9 @@ namespace Game {
 				break;
 			}
 
-			DrawStringToHandle(475, 345, "タイトルに戻りますか？", 0x000000, font3);
-			DrawStringToHandle(565, 410, "はい", yes, font3);
-			DrawStringToHandle(655, 410, "いいえ", no, font3);
+			DrawStringToHandle(475, 345, (const char*)u8"タイトルに戻りますか？", 0x000000, font3);
+			DrawStringToHandle(565, 410, (const char*)u8"はい", yes, font3);
+			DrawStringToHandle(655, 410, (const char*)u8"いいえ", no, font3);
 		}
 		else {
 			switch (opt)

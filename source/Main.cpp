@@ -4,7 +4,6 @@
 // 配布ソースコードの一部に、以下のライブラリを含みます
 // 著作権表示等の詳細は、README.mdをご覧ください
 // ・nlohmann/json（ https://github.com/nlohmann/json ）version 3.9.1
-// ・javacommons/strconv（ https://github.com/javacommons/strconv ）v1.8.10
 // 
 // また、本ソフトは DXライブラリ（Ver3.23 https://dxlib.xsrv.jp/ ）も使用していますが
 // 配布ソースコードには含んでおりませんので、ビルドされる方は、ご自身でのダウンロードや設定等をお願いいたします
@@ -12,7 +11,6 @@
 
 #include "DxLib.h"
 #include "nlohmann/json.hpp"
-#include "javacommons/strconv.h"
 #include "Global.h"
 #include "Menu.h"
 #include "Place.h"
@@ -48,15 +46,16 @@ namespace Game {
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	/* ウィンドウ設定 */
+	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);	// DxLib関数の文字列引数に使用する文字コードの設定
 	Game::LoadConfig();
-	SetWindowText(Game::strGameName.c_str());
-	SetMainWindowClassName(Game::SOFT_NAME);	// ウィンドウクラス名を登録
-	SetAlwaysRunFlag(TRUE);						// 非アクティブ時も実行
+	SetMainWindowText(Game::strGameName.c_str());	// タイトルテキストの設定
+	SetMainWindowClassName(Game::SOFT_NAME);		// ウィンドウクラス名を登録
+	SetAlwaysRunFlag(TRUE);							// 非アクティブ時も実行
 	//SetWindowIconID(1);							// アイコン（.icoファイルとicon.rcが必要。引数はicon.rcで設定した任意のアイコンID）
-	SetOutApplicationLogValidFlag(FALSE);		// ログを出力しない
-	ChangeWindowMode(TRUE);						// フルスクリーンにしない
-	SetGraphMode(1280, 720, 32);				// ウィンドウサイズと色ビット数の指定
-	SetWindowSizeExtendRate(1.0);				// 実際に表示するウィンドウサイズに変更
+	SetOutApplicationLogValidFlag(FALSE);			// ログを出力しない
+	ChangeWindowMode(TRUE);							// フルスクリーンにしない
+	SetGraphMode(1280, 720, 32);					// ウィンドウサイズと色ビット数の指定
+	SetWindowSizeExtendRate(1.0);					// 実際に表示するウィンドウサイズに変更
 
 	/* 初期化 */
 	if (DxLib_Init() == -1) {
@@ -103,15 +102,16 @@ namespace Game {
 
 	void MakeHandles() {
 		// フォント作成
-		font1 = CreateFontToHandle("游明朝", 24, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font2 = CreateFontToHandle("游明朝", 18, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font3 = CreateFontToHandle("游明朝", 20, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font4 = CreateFontToHandle("游明朝", 48, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font5 = CreateFontToHandle("游明朝", 12, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font6 = CreateFontToHandle("游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16);
+		SetFontCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
+		font1 = CreateFontToHandle((const char*)u8"游明朝", 24, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font2 = CreateFontToHandle((const char*)u8"游明朝", 18, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font3 = CreateFontToHandle((const char*)u8"游明朝", 20, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font4 = CreateFontToHandle((const char*)u8"游明朝", 48, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font5 = CreateFontToHandle((const char*)u8"游明朝", 12, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font6 = CreateFontToHandle((const char*)u8"游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
 
 		// ダイアログボックス画像読み込み
-		Dialog(LoadGraph("data/picture/[自作]dialog.png"));
+		Dialog(LoadGraph((const char*)u8"data/picture/[自作]dialog.png"));
 	}
 
 	void DeleteHandles() {
@@ -141,31 +141,37 @@ namespace Game {
 		// ゲームタイトルの設定
 		if (js_cfg["game"].is_object()) {
 			if (js_cfg["game"]["name"].is_string()) {
-				strGameName = utf8_to_ansi(js_cfg["game"]["name"]);
+				strGameName = js_cfg["game"]["name"];
 			}
 			if (js_cfg["game"]["version"].is_string()) {
-				strGameVersion = utf8_to_ansi(js_cfg["game"]["version"]);
+				strGameVersion = js_cfg["game"]["version"];
 			}
 		}
 	}
 
 	void SetConfig() {
 		// システムSEの読み込み
+		string tmp = "";
 		if (js_cfg["se"].is_object()) {
 			if (js_cfg["se"]["cursor"].is_string()) {
-				sh_cursor = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["cursor"]).c_str());
+				tmp = js_cfg["se"]["cursor"];
+				sh_cursor = LoadSoundMem(tmp.c_str());
 			}
 			if (js_cfg["se"]["decide"].is_string()) {
-				sh_decide = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["decide"]).c_str());
+				tmp = js_cfg["se"]["decide"];
+				sh_decide = LoadSoundMem(tmp.c_str());
 			}
 			if (js_cfg["se"]["cancel"].is_string()) {
-				sh_cancel = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["cancel"]).c_str());
+				tmp = js_cfg["se"]["cancel"];
+				sh_cancel = LoadSoundMem(tmp.c_str());
 			}
 			if (js_cfg["se"]["success"].is_string()) {
-				sh_success = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["success"]).c_str());
+				tmp = js_cfg["se"]["success"];
+				sh_success = LoadSoundMem(tmp.c_str());
 			}
 			if (js_cfg["se"]["fail"].is_string()) {
-				sh_fail = LoadSoundMem(utf8_to_ansi(js_cfg["se"]["fail"]).c_str());
+				tmp = js_cfg["se"]["fail"];
+				sh_fail = LoadSoundMem(tmp.c_str());
 			}
 		}
 
@@ -192,12 +198,12 @@ namespace Game {
 		if (js_cfg["title"].is_object()) {
 			if (js_cfg["title"]["back"].is_array()) {
 				if (js_cfg["title"]["back"][0].is_string()) {
-					strBack = utf8_to_ansi(js_cfg["title"]["back"][0]);
+					strBack =js_cfg["title"]["back"][0];
 				}
 			}
 			if (js_cfg["title"]["bgm"].is_array()) {
 				if (js_cfg["title"]["bgm"][0].is_string()) {
-					strBgm = utf8_to_ansi(js_cfg["title"]["bgm"][0]);
+					strBgm = js_cfg["title"]["bgm"][0];
 				}
 				if (js_cfg["title"]["bgm"][1].is_number()) {
 					bgmVol = js_cfg["title"]["bgm"][1];

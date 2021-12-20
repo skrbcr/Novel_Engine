@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include "Global.h"
+#include "Utilities.h"
 
 using string = std::string;
 using string_view = std::string_view;

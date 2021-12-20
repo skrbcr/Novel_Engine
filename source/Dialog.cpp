@@ -1,21 +1,6 @@
 #include "Dialog.h"
 
 namespace Game {
-	/// <summary>
-	/// 文字数を数える
-	/// </summary>
-	/// <param name="str">文字列</param>
-	/// <returns>文字数(size_t)</returns>
-	static size_t strcount_sjis(string_view str);
-
-	/// <summary>
-	/// 先頭から、指定した文字数を抽出
-	/// </summary>
-	/// <param name="str">文字列</param>
-	/// <param name="nCount">文字数</param>
-	/// <returns>抽出した文字列</returns>
-	static string strextract_sjis(string_view str, size_t nCount);
-
 	int Dialog::gh_box = 0;
 
 	void Dialog::Set(string_view speaker, string_view content) {
@@ -25,7 +10,7 @@ namespace Game {
 		status = 0;
 		strContDisp = "";
 		index_strCont = 0;
-		nWordContnet = strcount_sjis(strContent);
+		nWordContnet = strcount_utf8(strContent.c_str());
 		fcounter = 0;
 	}
 
@@ -45,7 +30,7 @@ namespace Game {
 				index_strCont += 2;
 			}
 			if (index_strCont <= nWordContnet) {
-				strContDisp = strextract_sjis(strContent, index_strCont);
+				strContDisp = strextract_utf8(strContent.c_str(), index_strCont);
 				fcounter++;
 			}
 			else {
@@ -174,88 +159,5 @@ namespace Game {
 		}
 
 		return status;
-	}
-
-	size_t strcount_sjis(string_view str) {
-		size_t zStrCount = 0;
-		size_t zStrLen = str.size();
-		const char* lpStr = str.data();
-
-		for (size_t i = 0; i < zStrLen; ++i) {
-			// 2バイト文字の検出
-			if (((static_cast<unsigned char>(lpStr[i]) >= 0x81 && static_cast<unsigned char>(lpStr[i]) <= 0x9F)
-				|| (static_cast<unsigned char>(lpStr[i]) >= 0xE0 && static_cast<unsigned char>(lpStr[i]) <= 0xFC))
-				&& i + 1 < zStrLen) {
-				zStrCount++;
-				i++;
-			}
-			// 描画指定子を除外
-			else if (lpStr[i] == '\\' && i + 3 < zStrLen && lpStr[i + 3] == '\\') {
-				if (lpStr[i + 1] == 'c' || lpStr[i + 1] == 's') {
-					if (lpStr[i + 2] >= 0x30 && lpStr[i + 2] <= 0x39) {
-						i += 3;
-						continue;
-					}
-				}
-			}
-			else if (lpStr[i] == '\n') {
-				continue;
-			}
-			// 1バイト文字の検出
-			else if ((lpStr[i] >= ' ' && lpStr[i] <= '~') ||
-				(static_cast<unsigned char>(lpStr[i]) >= 0xA1 && static_cast<unsigned char>(lpStr[i]) <= 0xDF)) {
-				zStrCount++;
-			}
-		}
-
-		return zStrCount;
-	}
-
-	string strextract_sjis(string_view str, size_t nCount) {
-		size_t zStrCount = 0;
-		size_t zStrLen = str.size();
-		const char* lpStr = str.data();
-		string strRes = "";
-
-		for (size_t i = 0; i < zStrLen; ++i) {
-			if (zStrCount > nCount) {
-				break;			// 抽出する文字数を超えていたら、終了
-			}
-
-			// 2バイト文字の検出
-			if (((static_cast<unsigned char>(lpStr[i]) >= 0x81 && static_cast<unsigned char>(lpStr[i]) <= 0x9F)
-				|| (static_cast<unsigned char>(lpStr[i]) >= 0xE0 && static_cast<unsigned char>(lpStr[i]) <= 0xFC))
-				&& i + 1 < zStrLen) {
-				strRes += lpStr[i];
-				strRes += lpStr[i + 1];
-				zStrCount++;
-				i++;
-			}
-			// 描画指定子は何もせずに格納
-			else if (lpStr[i] == '\\' && i + 3 < zStrLen && lpStr[i + 3] == '\\') {
-				if (lpStr[i + 1] == 'c' || lpStr[i + 1] == 's') {
-					if (lpStr[i + 2] >= 0x30 && lpStr[i + 2] <= 0x39) {
-						strRes += lpStr[i];
-						strRes += lpStr[i + 1];
-						strRes += lpStr[i + 2];
-						strRes += lpStr[i + 3];
-						i += 3;
-						continue;
-					}
-				}
-			}
-			else if (lpStr[i] == '\n') {
-				strRes += lpStr[i];
-				continue;
-			}
-			// 1バイト文字の検出
-			else if ((lpStr[i] >= ' ' && lpStr[i] <= '~') ||
-				(static_cast<unsigned char>(lpStr[i]) >= 0xA1 && static_cast<unsigned char>(lpStr[i]) <= 0xDF)) {
-				strRes += lpStr[i];
-				zStrCount++;
-			}
-		}
-
-		return strRes;
 	}
 }
