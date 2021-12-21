@@ -6,8 +6,8 @@ namespace Game {
 		if (gh <= 0) {
 			ErrorLog(ER_IMG_LOAD, strImgFile);
 		}
-		this->x = static_cast<double>(x);
-		this->y = static_cast<double>(y);
+		this->x = x_org = static_cast<double>(x);
+		this->y = y_org = static_cast<double>(y);
 		this->alpha = alpha;
 	}
 
@@ -46,7 +46,7 @@ namespace Game {
 	}
 
 	void Image::SetEffect(ImageEffctType ieType, int frame) {
-		vImgEffct.push_back(ImageEffect(ieType, frame));
+		vImgEffect.push_back(ImageEffect(ieType, frame));
 	}
 
 	bool Image::Main() {
@@ -91,5 +91,15 @@ namespace Game {
 		}
 
 		return res;
+	}
+	void Image::Reset() {
+		x = x_org;
+		y = y_org;
+		for (auto& im : vImgEffect) {
+			im.fcounter = 1;
+		}
+		for (auto& im : vImgMotion) {
+			im._fcounter = 1;
+		}
 	}
 }

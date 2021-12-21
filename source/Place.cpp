@@ -144,10 +144,12 @@ namespace Game {
 							case 0:
 								if (js_img[1].is_string() && js_img[2].is_number_integer() && js_img[3].is_number_integer()) {
 									if (js_img[4].is_number()) {
-										events[i].vImage.push_back(Image(js_img[1], js_img[2], js_img[3], js_img[4]));
+										events[i].vImage.push_back(Image());
+										(*events[i].vImage.rbegin()).SetImage(js_img[1], js_img[2], js_img[3], js_img[4]);
 									}
 									else {
-										events[i].vImage.push_back(Image(js_img[1], js_img[2], js_img[3], 1.0));
+										events[i].vImage.push_back(Image());
+										(*events[i].vImage.rbegin()).SetImage(js_img[1], js_img[2], js_img[3], 1.0);
 									}
 								}
 								break;
@@ -188,21 +190,11 @@ namespace Game {
 		int res = -1;		// 返り値
 		int res_d = -1;		// 詳細返り値
 
-		// 背景描画
-		backImg.Main();
-
-		// availableなオブジェクトの画像を描画
-		for (const auto& ev : events) {
-			if (ev.available && ev.gh_obj != 0 && ev.gh_obj != -1) {
-				DrawGraph(ev.x_obj, ev.y_obj, ev.gh_obj, TRUE);
-			}
-		}
-
 		// イベント実行中でないときは、イベント発生を監視する
 		if (!onEvent) {
-			// イベント発生時(triggerオン時)の処理、今回はavailableのみで処理
+			// イベント発生時の処理
 			for (int i = 0; i < nEvent; ++i) {
-				if (/*events[i].trigger && */events[i].available) {
+				if (events[i].available) {
 					index_factor = 0;
 					onEvent = true;
 					onNext = true;
@@ -215,6 +207,20 @@ namespace Game {
 		// イベントがオンになった時の処理
 		if (onNext) {
 			SetFactor();
+		}
+
+		// 背景描画
+		backImg.Main();
+
+		// availableなオブジェクトの画像を描画
+		//for (const auto& ev : events) {
+		//	if (ev.available && ev.gh_obj != 0 && ev.gh_obj != -1) {
+		//		DrawGraph(ev.x_obj, ev.y_obj, ev.gh_obj, TRUE);
+		//	}
+		//}
+
+		for (auto& img : events[index_event].vImage) {
+			img.Main();
 		}
 
 		// エフェクトの実行
@@ -295,6 +301,9 @@ namespace Game {
 				onNext = false;
 				index_factor = 0;
 				events[index_event].available = false;
+				for (auto& img : events[index_event].vImage) {
+					img.Reset();
+				}
 
 				res = index_event;
 			}
@@ -328,57 +337,83 @@ namespace Game {
 	}
 
 	void Place::SetFactor() {
+		json& js_fac = js["event"][index_event]["content"][index_factor];
 		// エフェクト
-		if (js["event"][index_event]["content"][index_factor]["effect"].is_array()) {
+		if (js_fac["effect"].is_array()) {
 			effectType eType = effectType::NO_EFFECT;
 			int frame = 0;
 			color_t color = 0U;
 			int frame_after = 30;		// エフェクト後の待機時間は既定30フレーム
-			if (js["event"][index_event]["content"][index_factor]["effect"][0].is_number_integer()) {
-				eType = static_cast<effectType>(js["event"][index_event]["content"][index_factor]["effect"][0]);
+			if (js_fac["effect"][0].is_number_integer()) {
+				eType = static_cast<effectType>(js_fac["effect"][0]);
 			}
-			if (js["event"][index_event]["content"][index_factor]["effect"][1].is_number()) {
-				frame = js["event"][index_event]["content"][index_factor]["effect"][1];
+			if (js_fac["effect"][1].is_number()) {
+				frame = js_fac["effect"][1];
 			}
-			if (js["event"][index_event]["content"][index_factor]["effect"][2].is_string()) {
-				string str = js["event"][index_event]["content"][index_factor]["effect"][2];
+			if (js_fac["effect"][2].is_string()) {
+				string str = js_fac["effect"][2];
 				if (!str.empty()) {
 					color = static_cast<unsigned int>(std::stoul(str, nullptr, 16));
 				}
 			}
-			if (js["event"][index_event]["content"][index_factor]["effect"][3].is_number()) {
-				frame_after = js["event"][index_event]["content"][index_factor]["effect"][3];
+			if (js_fac["effect"][3].is_number()) {
+				frame_after = js_fac["effect"][3];
 			}
 			effect.Set(eType, frame, frame_after, color);
 		}
 
 		// ダイアログ
-		if (js["event"][index_event]["content"][index_factor]["dialog"].is_array()) {
+		if (js_fac["dialog"].is_array()) {
 			string speaker = "";
 			string content = "";
-			if (js["event"][index_event]["content"][index_factor]["dialog"][0].is_string()) {
-				speaker = js["event"][index_event]["content"][index_factor]["dialog"][0];
+			if (js_fac["dialog"][0].is_string()) {
+				speaker = js_fac["dialog"][0];
 			}
-			if (js["event"][index_event]["content"][index_factor]["dialog"][1].is_string()) {
-				content = js["event"][index_event]["content"][index_factor]["dialog"][1];
+			if (js_fac["dialog"][1].is_string()) {
+				content = js_fac["dialog"][1];
 			}
 			dialog.Set(speaker, content);
 			useDlg = true;
 		}
 
+		// Image
+		if (js_fac["image"].is_object()) {
+			if (js_fac["image"]["display"].is_array()) {
+				if (js_fac["image"]["display"][0].is_number_integer() && js_fac["image"]["display"][1].is_boolean()) {
+					if (js_fac["image"]["display"][0] >= 0 && js_fac["image"]["display"][0] < events[index_event].vImage.size()) {
+						events[index_event].vImage[js_fac["image"]["display"][0]].ChangeVisible(js_fac["image"]["display"][1]);
+					}
+				}
+			}
+			if (js_fac["image"]["effect"].is_array()) {
+
+			}
+			if (js_fac["image"]["motion"].is_array()) {
+				if (js_fac["image"]["motion"][0].is_number_integer() && js_fac["image"]["motion"][1].is_number_integer() &&
+					js_fac["image"]["motion"][2].is_number() && js_fac["image"]["motion"][3].is_number() &&
+					js_fac["image"]["motion"][4].is_number_integer()) {
+					if (js_fac["image"]["motion"][0] >= 0 && js_fac["image"]["display"][0] < events[index_event].vImage.size()) {
+						ImageMotionType a = static_cast<ImageMotionType>(js_fac["image"]["motion"][1]);
+						events[index_event].vImage[js_fac["image"]["motion"][0]].SetMotion(
+							static_cast<ImageMotionType>(js_fac["image"]["motion"][1]), js_fac["image"]["motion"][2],
+							js_fac["image"]["motion"][3], js_fac["image"]["motion"][4], 0);
+					}
+				}
+			}
+		}
+
 		// 選択肢
-		if (js["event"][index_event]["content"][index_factor]["choice"].is_object()) {
-			if (js["event"][index_event]["content"][index_factor]["choice"]["text"].is_string()) {
-				string str = js["event"][index_event]["content"][index_factor]["choice"]["text"];
+		if (js_fac["choice"].is_object()) {
+			if (js_fac["choice"]["text"].is_string()) {
+				string str = js_fac["choice"]["text"];
 				dialog.Set("", str);
 			}
-			if (js["event"][index_event]["content"][index_factor]["choice"]["option"].is_array()) {
-				int n = static_cast<int>(js["event"][index_event]["content"][index_factor]["choice"]["option"].size());
+			if (js_fac["choice"]["option"].is_array()) {
+				int n = static_cast<int>(js_fac["choice"]["option"].size());
 				vector<string> vstr(n);
 				for (int i = 0; i < n; ++i) {
-					if (js["event"][index_event]["content"][index_factor]["choice"]["option"][i].is_array()
-						&& js["event"][index_event]["content"][index_factor]["choice"]["option"][i][0].is_string()) {
-						vstr[i] = js["event"][index_event]["content"][index_factor]["choice"]["option"][i][0];
+					if (js_fac["choice"]["option"][i].is_array() && js_fac["choice"]["option"][i][0].is_string()) {
+						vstr[i] = js_fac["choice"]["option"][i][0];
 					}
 				}
 				choice.Set(vstr);
@@ -388,13 +423,13 @@ namespace Game {
 
 		// BGM
 		// 再生・停止
-		if (js["event"][index_event]["content"][index_factor]["bgm"].is_object()) {
-			if (js["event"][index_event]["content"][index_factor]["bgm"]["play"].is_array()) {
+		if (js_fac["bgm"].is_object()) {
+			if (js_fac["bgm"]["play"].is_array()) {
 				int tmp_zero = TRUE;
-				if (js["event"][index_event]["content"][index_factor]["bgm"]["play"][0].is_boolean()) {
-					if (js["event"][index_event]["content"][index_factor]["bgm"]["play"][0] == true) {		// 再生
-						if (js["event"][index_event]["content"][index_factor]["bgm"]["play"][1].is_boolean()) {
-							if (js["event"][index_event]["content"][index_factor]["bgm"]["play"][1] == false) {
+				if (js_fac["bgm"]["play"][0].is_boolean()) {
+					if (js_fac["bgm"]["play"][0] == true) {		// 再生
+						if (js_fac["bgm"]["play"][1].is_boolean()) {
+							if (js_fac["bgm"]["play"][1] == false) {
 								tmp_zero = FALSE;
 							}
 						}
@@ -406,38 +441,38 @@ namespace Game {
 				}
 			}
 			// エフェクト
-			if (js["event"][index_event]["content"][index_factor]["bgm"]["effect"].is_array()) {
+			if (js_fac["bgm"]["effect"].is_array()) {
 				BGM_effct tmp_type = BGM_effct::NO_EFFECT;
 				double tmp_arg = 0.0;
-				if (js["event"][index_event]["content"][index_factor]["bgm"]["effect"][0].is_number_integer()) {
-					tmp_type = static_cast<BGM_effct>(js["event"][index_event]["content"][index_factor]["bgm"]["effect"][0]);
+				if (js_fac["bgm"]["effect"][0].is_number_integer()) {
+					tmp_type = static_cast<BGM_effct>(js_fac["bgm"]["effect"][0]);
 				}
-				if (js["event"][index_event]["content"][index_factor]["bgm"]["effect"][1].is_number()) {
-					tmp_arg = static_cast<double>(js["event"][index_event]["content"][index_factor]["bgm"]["effect"][1]);
+				if (js_fac["bgm"]["effect"][1].is_number()) {
+					tmp_arg = static_cast<double>(js_fac["bgm"]["effect"][1]);
 				}
 				bgm.SetEffect(tmp_type, tmp_arg);
 			}
 		}
 
 		// フラグ処理
-		if (js["event"][index_event]["content"][index_factor]["flag"].is_array()) {
-			if (js["event"][index_event]["content"][index_factor]["flag"][0].is_string()) {
-				if (js["event"][index_event]["content"][index_factor]["flag"][0] == "general") {
-					if (js["event"][index_event]["content"][index_factor]["flag"][1].is_number_integer()) {
-						int i = js["event"][index_event]["content"][index_factor]["flag"][1];
+		if (js_fac["flag"].is_array()) {
+			if (js_fac["flag"][0].is_string()) {
+				if (js_fac["flag"][0] == "general") {
+					if (js_fac["flag"][1].is_number_integer()) {
+						int i = js_fac["flag"][1];
 						if (i >= 0 && i < FLAG_MAX) {
-							if (js["event"][index_event]["content"][index_factor]["flag"][2].is_boolean()) {
-								flag[i] = js["event"][index_event]["content"][index_factor]["flag"][2];
+							if (js_fac["flag"][2].is_boolean()) {
+								flag[i] = js_fac["flag"][2];
 							}
 						}
 					}
 				}
-				else if (js["event"][index_event]["content"][index_factor]["flag"][0] == "event") {
-					if (js["event"][index_event]["content"][index_factor]["flag"][1].is_number_integer()) {
-						int i = js["event"][index_event]["content"][index_factor]["flag"][1];
+				else if (js_fac["flag"][0] == "event") {
+					if (js_fac["flag"][1].is_number_integer()) {
+						int i = js_fac["flag"][1];
 						if (i >= 0 && i < nEvent) {
-							if (js["event"][index_event]["content"][index_factor]["flag"][2].is_boolean()) {
-								events[i].available = js["event"][index_event]["content"][index_factor]["flag"][2];
+							if (js_fac["flag"][2].is_boolean()) {
+								events[i].available = js_fac["flag"][2];
 							}
 						}
 					}
@@ -446,9 +481,9 @@ namespace Game {
 		}
 
 		// Place移動
-		if (js["event"][index_event]["content"][index_factor]["place"].is_array()) {
-			if (js["event"][index_event]["content"][index_factor]["place"][0].is_number_integer()) {
-				nTmpNextPlace = js["event"][index_event]["content"][index_factor]["place"][0];
+		if (js_fac["place"].is_array()) {
+			if (js_fac["place"][0].is_number_integer()) {
+				nTmpNextPlace = js_fac["place"][0];
 				onPlaceChange = true;
 			}
 		}

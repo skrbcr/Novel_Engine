@@ -102,8 +102,10 @@ namespace Game {
 	class Image {
 	private:
 		int gh = 0;				// グラフィックハンドル
-		double x = 0;			// 描画左上X
-		double y = 0;			// 描画左上Y
+		double x = 0.0;			// 描画左上X
+		double y = 0.0;			// 描画左上Y
+		double x_org = 0.0;		// X座標（元）
+		double y_org = 0.0;		// Y座標（元）
 		double alpha = 0;		// 描画アルファ値
 		double rad = 0;			// 回転角度
 		bool onShow = false;	// 表示フラグ
@@ -111,7 +113,7 @@ namespace Game {
 						// 描画エフェクト管理vector
 		vector<ImageMotion> vImgMotion = vector<ImageMotion>(0);
 						// モーション管理vector
-		vector<ImageEffect> vImgEffct = vector<ImageEffect>(0);
+		vector<ImageEffect> vImgEffect = vector<ImageEffect>(0);
 
 	public:
 		Image() {
@@ -122,9 +124,9 @@ namespace Game {
 			DeleteGraph(gh);
 		}
 
-		Image(string_view strImgFile, int x, int y, double alpha) {
-			SetImage(strImgFile, x, y, alpha);
-		}
+		//Image(string_view strImgFile, int x, int y, double alpha) {
+		//	SetImage(strImgFile, x, y, alpha);
+		//}
 
 		void SetImage(string_view strImgFile, int x, int y, double alpha);
 
@@ -141,5 +143,7 @@ namespace Game {
 		void ChangeVisible(bool flag) {
 			onShow = flag;
 		}
+
+		void Reset();
 	};
 }
