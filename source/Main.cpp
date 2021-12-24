@@ -1,14 +1,18 @@
 // skrbcr/Novel_Engine（https://github.com/skrbcr/Novel_Engine）
-// DXライブラリ使用のノベルゲームエンジン？のアルファ版
+// DXライブラリ使用のノベルゲームエンジン？のアルファ版 ver.0.2.0（予定）
 // 
 // 配布ソースコードの一部に、以下のライブラリを含みます
-// 著作権表示等の詳細は、README.mdをご覧ください
+// 著作権表示の詳細は、"./nlohmann/json.hpp" や "../README.md" をご覧ください
 // ・nlohmann/json（ https://github.com/nlohmann/json ）version 3.9.1
 // 
 // また、本ソフトは DXライブラリ（Ver3.23 https://dxlib.xsrv.jp/ ）も使用していますが
-// 配布ソースコードには含んでおりませんので、ビルドされる方は、ご自身でのダウンロードや設定等をお願いいたします
+// 配布ソースコードには含んでおりません
+// ですから、ビルドされる方は、ご自身でのダウンロードや設定等をお願いいたします
 // 
 
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
 #include "DxLib.h"
 #include "nlohmann/json.hpp"
 #include "Global.h"
@@ -45,6 +49,11 @@ namespace Game {
 }
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
+	/* デバッグ用（メモリリーク検知） */
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	//int* a = new int();		// メモリリークのサンプル（deleteを呼ばない）
+
 	/* ウィンドウ設定 */
 	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);	// DxLib関数の文字列引数に使用する文字コードの設定
 	Game::LoadConfig();
