@@ -386,14 +386,18 @@ namespace Game {
 				}
 			}
 			if (js_fac["image"]["effect"].is_array()) {
-
+				if (js_fac["image"]["effect"][0].is_number_integer() && js_fac["image"]["effect"][1].is_number_integer() &&
+					js_fac["image"]["effect"][2].is_number()) {
+					events[index_event].vImage[js_fac["image"]["effect"][0]].SetEffect(
+						static_cast<ImageEffctType>(js_fac["image"]["effect"][1]), js_fac["image"]["effect"][2]
+					);
+				}
 			}
 			if (js_fac["image"]["motion"].is_array()) {
 				if (js_fac["image"]["motion"][0].is_number_integer() && js_fac["image"]["motion"][1].is_number_integer() &&
 					js_fac["image"]["motion"][2].is_number() && js_fac["image"]["motion"][3].is_number() &&
 					js_fac["image"]["motion"][4].is_number_integer()) {
 					if (js_fac["image"]["motion"][0] >= 0 && js_fac["image"]["display"][0] < events[index_event].vImage.size()) {
-						ImageMotionType a = static_cast<ImageMotionType>(js_fac["image"]["motion"][1]);
 						events[index_event].vImage[js_fac["image"]["motion"][0]].SetMotion(
 							static_cast<ImageMotionType>(js_fac["image"]["motion"][1]), js_fac["image"]["motion"][2],
 							js_fac["image"]["motion"][3], js_fac["image"]["motion"][4], 0);

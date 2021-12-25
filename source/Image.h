@@ -28,9 +28,9 @@ namespace Game {
 	/// Imageクラスのエフェクトの種類
 	/// </summary>
 	enum class ImageEffctType {
-		NOEFFECT,
-		FADEOUT,
-		FADEIN,
+		NOEFFECT,		// なし
+		FADEOUT,		// フェードアウト
+		FADEIN,			// フェードイン
 	};
 
 	/// <summary>
@@ -87,7 +87,7 @@ namespace Game {
 		ImageEffctType ieType = ImageEffctType::NOEFFECT;
 		int frame = 0;			// 所要フレーム
 
-		int fcounter = 0;		// フレームカウンタ
+		int _fcounter = 0;		// フレームカウンタ
 
 		ImageEffect() {
 
@@ -104,9 +104,10 @@ namespace Game {
 		int gh = 0;				// グラフィックハンドル
 		double x = 0.0;			// 描画左上X
 		double y = 0.0;			// 描画左上Y
+		double alpha = 0;		// 描画アルファ値
 		double x_org = 0.0;		// X座標（元）
 		double y_org = 0.0;		// Y座標（元）
-		double alpha = 0;		// 描画アルファ値
+		double alpha_org = 0.0;	// アルファ値（元）
 		double rad = 0;			// 回転角度
 		bool onShow = false;	// 表示フラグ
 
@@ -123,10 +124,6 @@ namespace Game {
 		~Image() {
 			DeleteGraph(gh);
 		}
-
-		//Image(string_view strImgFile, int x, int y, double alpha) {
-		//	SetImage(strImgFile, x, y, alpha);
-		//}
 
 		void SetImage(string_view strImgFile, int x, int y, double alpha);
 

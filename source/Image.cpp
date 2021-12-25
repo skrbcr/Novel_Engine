@@ -8,7 +8,7 @@ namespace Game {
 		}
 		this->x = x_org = static_cast<double>(x);
 		this->y = y_org = static_cast<double>(y);
-		this->alpha = alpha;
+		this->alpha = alpha_org = alpha;
 	}
 
 	void Image::SetMotion(ImageMotionType imType, int x, int y, int frame, int arg) {
@@ -86,8 +86,31 @@ namespace Game {
 				}
 			}
 
+			for (auto& ie : vImgEffect) {
+				if (ie._fcounter <= ie.frame) {
+					switch (ie.ieType) {
+					case ImageEffctType::FADEIN:
+						alpha = alpha_org * ie._fcounter / ie.frame;
+						break;
+					case ImageEffctType::FADEOUT:
+						alpha = alpha_org * (1.0 - static_cast<double>(ie._fcounter) / ie.frame);
+						break;
+					default:
+						break;
+					}
+
+					if (ie._fcounter < ie.frame) {
+						res = false;
+					}
+
+					ie._fcounter++;
+				}
+			}
+
 			//DrawRotaGraph(static_cast<int>(x), static_cast<int>(y), 1.0, rad, gh, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha * 255));
 			DrawGraphF(static_cast<float>(x), static_cast<float>(y), gh, TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		}
 
 		return res;
@@ -95,11 +118,8 @@ namespace Game {
 	void Image::Reset() {
 		x = x_org;
 		y = y_org;
-		for (auto& im : vImgEffect) {
-			im.fcounter = 1;
-		}
-		for (auto& im : vImgMotion) {
-			im._fcounter = 1;
-		}
+		alpha = alpha_org;
+		vImgEffect.clear();
+		vImgEffect.clear();
 	}
 }
