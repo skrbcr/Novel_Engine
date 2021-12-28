@@ -2,20 +2,22 @@
 #include <vector>
 #include <string>
 #include "Global.h"
+#include "Image.h"
 
 using std::vector;
 using std::string_view;
 
-struct CharaImg
-{
-	int gh_body = 0;		// body グラフィックハンドル
-	int gh_face = 0;		// face グラフィックハンドル
-	string strPos = "";		// 配置コマンド
-	int x = 0;				// 画像x座標
-	int y = 0;				// 画像y座標
-};
-
 namespace Game {
+	struct CharaImg {
+		//int gh_body = 0;		// body グラフィックハンドル
+		//int gh_face = 0;		// face グラフィックハンドル
+		Image img_body;			// 土台画像
+		Image img_face;			// 上乗せ画像
+		string strPos = "";		// 配置コマンド
+		int x = 0;				// 画像x座標
+		int y = 0;				// 画像y座標
+	};
+
 	class Character
 	{
 	private:
@@ -46,16 +48,16 @@ namespace Game {
 		/// <summary>
 		/// body 画像を設定
 		/// </summary>
-		/// <param name="gh"></param>
+		/// <param name="strFile"></param>
 		/// <param name="strPos"></param>
-		void SetBody(int gh, string_view strPos);
+		void SetBody(string_view strFile, string_view strPos);
 
 		/// <summary>
 		/// face 画像を設定
 		/// </summary>
-		/// <param name="gh"></param>
+		/// <param name="strFile"></param>
 		/// <param name="strPos"></param>
-		void SetFace(int gh, string_view strPos);
+		void SetFace(string_view strFile, string_view strPos);
 
 		/// <summary>
 		/// body 画像を削除

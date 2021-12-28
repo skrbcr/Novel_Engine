@@ -142,5 +142,10 @@ namespace Game {
 		}
 
 		void Reset();
+
+		void Clear() {
+			gh = 0;
+			onShow = false;
+		}
 	};
 }

@@ -139,20 +139,22 @@ namespace Game {
 				// Image
 				if (js["event"][i]["image"].is_array()) {
 					for (const auto& js_img : js["event"][i]["image"]) {
-						if (js_img[0].is_number_integer()) {
-							switch (static_cast<int>(js_img[0])) {
-							case 0:
-								if (js_img[1].is_string() && js_img[2].is_number_integer() && js_img[3].is_number_integer()) {
-									if (js_img[4].is_number()) {
-										events[i].vImage.push_back(Image());
-										(*events[i].vImage.rbegin()).SetImage(js_img[1], js_img[2], js_img[3], js_img[4]);
+						if (js_img.is_array()){
+							if (js_img[0].is_number_integer()) {
+								switch (static_cast<int>(js_img[0])) {
+								case 0:
+									if (js_img[1].is_string() && js_img[2].is_number_integer() && js_img[3].is_number_integer()) {
+										if (js_img[4].is_number()) {
+											events[i].vImage.push_back(Image());
+											(*events[i].vImage.rbegin()).SetImage(js_img[1], js_img[2], js_img[3], js_img[4]);
+										}
+										else {
+											events[i].vImage.push_back(Image());
+											(*events[i].vImage.rbegin()).SetImage(js_img[1], js_img[2], js_img[3], 1.0);
+										}
 									}
-									else {
-										events[i].vImage.push_back(Image());
-										(*events[i].vImage.rbegin()).SetImage(js_img[1], js_img[2], js_img[3], 1.0);
-									}
+									break;
 								}
-								break;
 							}
 						}
 					}

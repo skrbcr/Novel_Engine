@@ -5,25 +5,27 @@ namespace Game {
         if (index < 0 || index >= vchara.size()) {
             return;
         }
-        vchara[index].gh_body = 0;
-        vchara[index].gh_face = 0;
+        vchara[index].img_body = Image();
+        vchara[index].img_face = Image();
         vchara[index].strPos = strPos;
         vchara[index].x = x;
         vchara[index].y = y;
     }
 
-    void Character::SetBody(int gh, string_view strPos) {
+    void Character::SetBody(string_view strFile, string_view strPos) {
         for (auto& pos : vchara) {
             if (strPos == pos.strPos) {
-                pos.gh_body = gh;
+                pos.img_body.SetImage(strFile, pos.x, pos.y, 1.0);
+                pos.img_body.ChangeVisible(true);
             }
         }
     }
 
-    void Character::SetFace(int gh, string_view strPos) {
+    void Character::SetFace(string_view strFile, string_view strPos) {
         for (auto& pos : vchara) {
             if (strPos == pos.strPos) {
-                pos.gh_face = gh;
+                pos.img_face.SetImage(strFile, pos.x, pos.y, 1.0);
+                pos.img_face.ChangeVisible(true);
             }
         }
     }
@@ -31,7 +33,7 @@ namespace Game {
     void Character::DeleteBody(string_view strPos) {
         for (auto& pos : vchara) {
             if (strPos == pos.strPos) {
-                pos.gh_body = 0;
+                pos.img_body.Clear();
             }
         }
     }
@@ -39,19 +41,15 @@ namespace Game {
     void Character::DeleteFace(string_view strPos) {
         for (auto& pos : vchara) {
             if (strPos == pos.strPos) {
-                pos.gh_face = 0;
+                pos.img_face.Clear();
             }
         }
     }
 
     void Character::Main() {
-        for (const auto& pos : vchara) {
-            if (pos.gh_body != 0) {
-                DrawGraph(pos.x, pos.y, pos.gh_body, TRUE);
-            }
-            if (pos.gh_face != 0) {
-                DrawGraph(pos.x, pos.y, pos.gh_face, TRUE);
-            }
+        for (auto& pos : vchara) {
+            pos.img_body.Main();
+            pos.img_face.Main();
         }
     }
 }
