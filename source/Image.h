@@ -101,34 +101,75 @@ namespace Game {
 
 	class Image {
 	private:
-		int gh = 0;				// グラフィックハンドル
-		double x = 0.0;			// 描画左上X
-		double y = 0.0;			// 描画左上Y
-		double alpha = 0;		// 描画アルファ値
-		double x_org = 0.0;		// X座標（元）
-		double y_org = 0.0;		// Y座標（元）
-		double alpha_org = 0.0;	// アルファ値（元）
-		double rad = 0;			// 回転角度
-		bool onShow = false;	// 表示フラグ
-
-						// 描画エフェクト管理vector
-		vector<ImageMotion> vImgMotion = vector<ImageMotion>(0);
-						// モーション管理vector
-		vector<ImageEffect> vImgEffect = vector<ImageEffect>(0);
+		int gh;				// グラフィックハンドル
+		double x;			// 描画左上X
+		double y;			// 描画左上Y
+		double alpha;		// 描画アルファ値
+		double x_org;		// X座標（元）
+		double y_org;		// Y座標（元）
+		double alpha_org;	// アルファ値（元）
+		double rad;			// 回転角度
+		bool onShow;		// 表示フラグ						
+		vector<ImageMotion> vImgMotion;		// 描画エフェクト管理vector
+		vector<ImageEffect> vImgEffect;		// モーション管理vector
 
 	public:
 		Image() {
-
+			gh = 0;
+			x = 0.0;
+			y = 0.0;
+			alpha = 0;
+			x_org = 0.0;
+			y_org = 0.0;
+			alpha_org = 0.0;
+			rad = 0;
+			onShow = false;
+			vImgMotion = vector<ImageMotion>(0);
+			vImgEffect = vector<ImageEffect>(0);
 		}
 
 		~Image() {
 			DeleteGraph(gh);
 		}
 
+		/// <summary>
+		/// 画像を設定
+		/// </summary>
+		/// <param name="strImgFile"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="alpha"></param>
 		void SetImage(string_view strImgFile, int x, int y, double alpha);
 
+		/// <summary>
+		/// 画像のみを変更
+		/// </summary>
+		/// <param name="strImgFile"></param>
+		void ChangeImage(string_view strImgFile);
+
+		/// <summary>
+		/// デフォルトの位置を設定
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="alpha"></param>
+		void SetDefPos(int x, int y, double alpha);
+
+		/// <summary>
+		/// モーションを設定
+		/// </summary>
+		/// <param name="imType"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="frame"></param>
+		/// <param name="arg"></param>
 		void SetMotion(ImageMotionType imType, int x, int y, int frame, int arg);
 
+		/// <summary>
+		/// エフェクトを設定
+		/// </summary>
+		/// <param name="ieType"></param>
+		/// <param name="frame"></param>
 		void SetEffect(ImageEffctType ieType, int frame);
 
 		/// <summary>
@@ -137,13 +178,24 @@ namespace Game {
 		/// <returns>true:効果継続中 false:効果なし</returns>
 		bool Main();
 
+		/// <summary>
+		/// 表示状態を変更
+		/// </summary>
+		/// <param name="flag">表示フラグ</param>
 		void ChangeVisible(bool flag) {
 			onShow = flag;
 		}
 
+		/// <summary>
+		/// 画像をデフォルトの状態に戻す
+		/// </summary>
 		void Reset();
 
+		/// <summary>
+		/// 画像を削除
+		/// </summary>
 		void Clear() {
+			DeleteGraph(gh);
 			gh = 0;
 			onShow = false;
 		}

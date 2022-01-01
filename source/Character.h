@@ -9,23 +9,29 @@ using std::string_view;
 
 namespace Game {
 	struct CharaImg {
-		//int gh_body = 0;		// body グラフィックハンドル
-		//int gh_face = 0;		// face グラフィックハンドル
-		Image img_body;			// 土台画像
-		Image img_face;			// 上乗せ画像
-		string strPos = "";		// 配置コマンド
-		int x = 0;				// 画像x座標
-		int y = 0;				// 画像y座標
+		Image img_body;		// 土台画像
+		Image img_face;		// 上乗せ画像
+		string strPos;		// 配置コマンド
+		int x;				// 画像x座標
+		int y;				// 画像y座標
+
+		CharaImg() {
+			img_body = Image();
+			img_face = Image();
+			strPos = "";
+			x = 0;
+			y = 0;
+		}
 	};
 
 	class Character
 	{
 	private:
-		vector<CharaImg> vchara = vector<CharaImg>(0);		// キャラクター画像データ配列
+		vector<CharaImg> vchara;		// キャラクター画像データ配列
 
 	public:
 		Character() {
-
+			vchara = vector<CharaImg>(0);
 		}
 
 		Character(size_t nSizeVchara) {
@@ -48,16 +54,23 @@ namespace Game {
 		/// <summary>
 		/// body 画像を設定
 		/// </summary>
-		/// <param name="strFile"></param>
-		/// <param name="strPos"></param>
+		/// <param name="strFile">画像ファイル</param>
+		/// <param name="strPos">位置コマンド</param>
 		void SetBody(string_view strFile, string_view strPos);
 
 		/// <summary>
-		/// face 画像を設定
+		/// body 画像のみを変更
+		/// </summary>
+		/// <param name="strFile">画像ファイル</param>
+		/// <param name="strPos">位置コマンド</param>
+		void ChangeBody(string_view strFile, string_view strPos);
+
+		/// <summary>
+		/// face 画像のみを変更
 		/// </summary>
 		/// <param name="strFile"></param>
 		/// <param name="strPos"></param>
-		void SetFace(string_view strFile, string_view strPos);
+		void ChangeFace(string_view strFile, string_view strPos);
 
 		/// <summary>
 		/// body 画像を削除
@@ -75,6 +88,11 @@ namespace Game {
 		/// メイン関数
 		/// </summary>
 		void Main();
+
+		/// <summary>
+		/// 全消去(キャラ画像・エフェクト・モーション)
+		/// </summary>
+		void Clear();
 	};
 }
 

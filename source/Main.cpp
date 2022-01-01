@@ -105,7 +105,7 @@ namespace Game {
 
 	static Menu menu;			// メニュー
 	static Place place;			// 場所インスタンス
-	static Choice choice;		// 選択インスタンス
+	//static Choice choice;		// 選択インスタンス
 
 	static json js_cfg = json();		// Config.json
 
@@ -267,8 +267,8 @@ namespace Game {
 		for (int i = 0; i < FLAG_MAX; ++i) {
 			flag[i] = false;
 		}
-		place = Place();
-		choice = Choice();
+		place.Init();
+		//choice = Choice();
 		menu = Menu();
 		index_place = 0;
 

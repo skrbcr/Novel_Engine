@@ -85,6 +85,36 @@ namespace Game {
 
 		}
 
+		void Init() {
+			js_gen = json();		// PlaceNoteのJSON
+			nPlace = 0;				// Placeファイルの数
+
+			gh_back = 0;					// 背景画像
+			drawX = 0.0;					// 背景画像の描画x座標
+			drawY = 0.0;					// 背景画像の描画y座標
+			backImg = BackImage();	// 背景
+
+			sh_bgm = 0;						// BGMのサウンドハンドル
+			type_bgm = DX_PLAYTYPE_LOOP;	// BGMの再生方法
+			vol_bgm = 1.0;				// BGMの音量
+
+			onEffect = false;			// エフェクト中フラグ
+			onNext = false;			// 次の項目に移るフラグ
+			useDlg = false;			// ダイアログを使っているかフラグ
+			onChoice = false;			// 選択肢イベント中
+			onPlaceChange = false;		// Place変更フラグ
+			nTmpNextPlace = 0;			// 次のPlaceのファイル
+
+			js = json();			// JSONファイル
+			nEvent = 0;				// イベント数
+			//Event* events = nullptr;	// イベントリスト
+			events = vector<Event>();		// イベントリスト
+			index_event = 0;		// 現在実行中のイベントのインデックス
+			index_factor = 0;		// 現在実行中のイベントのcontentのインデックス
+			Dialog dialog = Dialog();	// ダイアログインスタンス
+			Choice choice = Choice();	// 選択肢インスタンス
+		}
+
 	public:
 		void SetGeneral();
 

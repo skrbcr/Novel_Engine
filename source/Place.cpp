@@ -225,6 +225,8 @@ namespace Game {
 			img.Main();
 		}
 
+		chara.Main();
+
 		// エフェクトの実行
 		onEffect = effect.Main();
 
@@ -306,6 +308,7 @@ namespace Game {
 				for (auto& img : events[index_event].vImage) {
 					img.Reset();
 				}
+				chara.Clear();
 
 				res = index_event;
 			}
@@ -376,6 +379,37 @@ namespace Game {
 			}
 			dialog.Set(speaker, content);
 			useDlg = true;
+		}
+
+		// キャラ画像
+		if (js_fac["chara"].is_object()) {
+			if (js_fac["chara"]["set"].is_object()) {
+				if (js_fac["chara"]["set"]["body"].is_array()) {
+					for (auto& img : js_fac["chara"]["set"]["body"]) {
+						if (img[0].is_string() && img[1].is_string()) {
+							if (img[2].is_boolean() && img[2] == true) {
+								chara.SetBody(img[1], img[0]);
+							}
+							else {
+								chara.ChangeBody(img[1], img[0]);
+							}
+						}
+						else if (img[0].is_string() && img[1].is_null()) {
+							chara.DeleteBody(img[0]);
+						}
+					}
+				}
+				if (js_fac["chara"]["set"]["face"].is_array()) {
+					for (auto& img : js_fac["chara"]["set"]["face"]) {
+						if (img[0].is_string() && img[1].is_string()) {
+							chara.ChangeFace(img[1], img[0]);
+						}
+						else if (img[0].is_string() && img[1].is_null()) {
+							chara.DeleteFace(img[0]);
+						}
+					}
+				}
+			}
 		}
 
 		// Image

@@ -11,6 +11,20 @@ namespace Game {
 		this->alpha = alpha_org = alpha;
 	}
 
+	void Image::ChangeImage(string_view strImgFile) {
+		DeleteGraph(gh);
+		gh = LoadGraph(strImgFile.data());
+		if (gh <= 0) {
+			ErrorLog(ER_IMG_LOAD, strImgFile);
+		}
+	}
+
+	void Image::SetDefPos(int x, int y, double alpha) {
+		this->x = x_org = static_cast<double>(x);
+		this->y = y_org = static_cast<double>(y);
+		this->alpha = alpha_org = alpha;
+	}
+
 	void Image::SetMotion(ImageMotionType imType, int x, int y, int frame, int arg) {
 		if (frame == 0) {
 			frame = 1;
@@ -115,6 +129,7 @@ namespace Game {
 
 		return res;
 	}
+
 	void Image::Reset() {
 		x = x_org;
 		y = y_org;
