@@ -2,6 +2,10 @@
 
 namespace Game {
 	int Dialog::gh_box = 0;
+	int Dialog::msgwnd_left = 0;
+	int Dialog::msgwnd_top = 0;
+	int Dialog::msgwnd_width = 0;
+	int Dialog::msgwnd_height = 0;
 
 	void Dialog::Set(string_view speaker, string_view content) {
 		strSpeaker = speaker;
@@ -16,10 +20,10 @@ namespace Game {
 
 	void Dialog::Draw() {
 		// メッセージボックス画像の描画
-		DrawGraph(DLGBOX_LEFT, DLGBOX_TOP, gh_box, TRUE);
+		DrawGraph(msgwnd_left, msgwnd_top, gh_box, TRUE);
 
 		// 話者の描画
-		DrawStringToHandle(DLGBOX_LEFT + 70, DLGBOX_TOP + 45, strSpeaker.c_str(), 0xFFFF00, font1);
+		DrawStringToHandle(msgwnd_left + 70, msgwnd_top + 45, strSpeaker.c_str(), 0xFFFF00, font1);
 
 		switch (status)
 		{
@@ -51,8 +55,8 @@ namespace Game {
 
 		// 内容の描画
 		int nLine = 0;
-		int drawX = DLGBOX_LEFT + 70;
-		int drawY = DLGBOX_TOP + 95;
+		int drawX = msgwnd_left + 70;
+		int drawY = msgwnd_top + 95;
 		int drawY_span = 50;
 		color_t color_now = 0xFFFFFF;
 		int fh_now = font1;
@@ -64,7 +68,7 @@ namespace Game {
 				DrawStringToHandle(drawX, drawY + nLine * drawY_span, strContDisp.substr(j, i - j).c_str(), color_now, fh_now);
 				j = i + 1;
 				nLine++;
-				drawX = DLGBOX_LEFT + 70;
+				drawX = msgwnd_left + 70;
 			}
 			else if (strContDisp[i] == '\\' && i + 3 < nLenContent && strContDisp[i + 3] == '\\') {
 				switch (strContDisp[i + 1])
@@ -74,21 +78,21 @@ namespace Game {
 					{
 					case '0':
 						fh_now = font1;
-						drawY = DLGBOX_TOP + 95;
+						drawY = msgwnd_top + 95;
 						if (drawY_span < 50) {
 							drawY_span = 50;
 						}
 						break;
 					case '1':
 						fh_now = font4;
-						drawY = DLGBOX_TOP + 105;
+						drawY = msgwnd_top + 105;
 						if (drawY_span < 100) {
 							drawY_span = 100;
 						}
 						break;
 					case '2':
 						fh_now = font5;
-						drawY = DLGBOX_TOP + 95;
+						drawY = msgwnd_top + 95;
 						if (drawY_span < 25 || i == 0) {
 							drawY_span = 25;
 						}

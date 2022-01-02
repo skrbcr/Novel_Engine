@@ -105,7 +105,6 @@ namespace Game {
 
 	static Menu menu;			// メニュー
 	static Place place;			// 場所インスタンス
-	//static Choice choice;		// 選択インスタンス
 
 	static json js_cfg = json();		// Config.json
 
@@ -118,9 +117,6 @@ namespace Game {
 		font4 = CreateFontToHandle((const char*)u8"游明朝", 48, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
 		font5 = CreateFontToHandle((const char*)u8"游明朝", 12, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
 		font6 = CreateFontToHandle((const char*)u8"游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
-
-		// ダイアログボックス画像読み込み
-		Dialog(LoadGraph((const char*)u8"data/picture/[自作]dialog.png"));
 	}
 
 	void DeleteHandles() {
@@ -181,6 +177,32 @@ namespace Game {
 			if (js_cfg["se"]["fail"].is_string()) {
 				tmp = js_cfg["se"]["fail"];
 				sh_fail = LoadSoundMem(tmp.c_str());
+			}
+		}
+
+		// ダイアログ
+		if (js_cfg["dialog"].is_object()) {
+			if (js_cfg["dialog"]["box"].is_object()) {
+				string file = "";
+				int gh = 0;
+				int l = 0, t = 0, w = 0, h = 0;
+				if (js_cfg["dialog"]["box"]["file"].is_string()) {
+					file = js_cfg["dialog"]["box"]["file"];
+					gh = LoadGraph(file.c_str());
+				}
+				if (js_cfg["dialog"]["box"]["left"].is_number_integer()) {
+					l = js_cfg["dialog"]["box"]["left"];
+				}
+				if (js_cfg["dialog"]["box"]["top"].is_number_integer()) {
+					t = js_cfg["dialog"]["box"]["top"];
+				}
+				if (js_cfg["dialog"]["box"]["width"].is_number_integer()) {
+					w = js_cfg["dialog"]["box"]["width"];
+				}
+				if (js_cfg["dialog"]["box"]["height"].is_number_integer()) {
+					h = js_cfg["dialog"]["box"]["height"];
+				}
+				Dialog::ApplyCongig(gh, l, t, w, h);
 			}
 		}
 

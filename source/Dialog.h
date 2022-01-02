@@ -8,12 +8,6 @@ using string = std::string;
 using string_view = std::string_view;
 
 namespace Game {
-	/* ダイアログボックスに合わせて設定 */
-	constexpr int DLGBOX_WIDTH = 1014;		// メッセージボックスの幅
-	constexpr int DLGBOX_HEIGHT = 212;		// メッセージボックスの高さ
-	constexpr int DLGBOX_TOP = 488;			// メッセージボックス上端のy座標
-	constexpr int DLGBOX_LEFT = 133;		// メッセージボックス左端のx座標
-
 	// 文字色リスト(処理の都合上、10個まで登録可能)
 	constexpr color_t colorList[10] =
 	{ 0xFFFFFF, 0xff0000, 0xFFCCFF, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000 };
@@ -23,36 +17,53 @@ namespace Game {
 	/// </summary>
 	class Dialog
 	{
+	public:
+		static int gh_box;			// メッセージボックスの画像
+		static int msgwnd_left;		// メッセージボックスの左端
+		static int msgwnd_top;		// メッセージボックスの上端
+		static int msgwnd_width;	// メッセージボックスの幅
+		static int msgwnd_height;	// メッセージボックスの高さ
+
 	private:
-		string strSpeaker = "";				// 話者文字列
-		string strContent = "";				// 内容文字列
-		size_t nLenSpeaker = (size_t)0;		// 話者文字列サイズ
-		size_t nLenContent = (size_t)0;		// 内容文字列サイズ
-		bool onDisplay = true;				// ダイアログボックス表示中か
+		string strSpeaker;		// 話者文字列
+		string strContent;		// 内容文字列
+		size_t nLenSpeaker;		// 話者文字列サイズ
+		size_t nLenContent;		// 内容文字列サイズ
+		bool onDisplay;			// ダイアログボックス表示中か
 
-		int status = 0;			// 描画モード
-		string strContDisp = "";			// 実際に表示する用の文字列
-		size_t index_strCont = 0;			// 表示文字語数インデックス
-		size_t nWordContnet = (size_t)0;	// 内容文字列の語数
+		int status;				// 描画モード
+		string strContDisp;		// 実際に表示する用の文字列
+		size_t index_strCont;	// 表示文字語数インデックス
+		size_t nWordContnet;	// 内容文字列の語数
 
-		int fcounter = 0;	// フレームカウンタ
-		int mode = 0;		// 表示モード
-		static int gh_box;		// メッセージボックスの画像
+		int fcounter;		// フレームカウンタ
+		int mode;			// 表示モード
 
 	public:
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
 		Dialog() {
-
+			strSpeaker = "";
+			strContent = "";
+			nLenSpeaker = (size_t)0;
+			nLenContent = (size_t)0;
+			onDisplay = true;
+			status = 0;
+			strContDisp = "";
+			index_strCont = 0;
+			nWordContnet = (size_t)0;
 		}
 
 		/// <summary>
-		/// コンストラクタ（メッセージウィンドウ画像を指定）
+		/// 設定を適用
 		/// </summary>
-		/// <param name="gh">メッセージウィンドウのグラフィックハンドル</param>
-		Dialog(int gh) {
+		static void ApplyCongig(int gh, int left, int top, int width, int height) {
 			gh_box = gh;
+			msgwnd_left = left;
+			msgwnd_top = top;
+			msgwnd_width = width;
+			msgwnd_height = height;
 		}
 
 		/// <summary>
