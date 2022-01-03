@@ -182,10 +182,10 @@ namespace Game {
 
 		// ダイアログ
 		if (js_cfg["dialog"].is_object()) {
-			if (js_cfg["dialog"]["box"].is_object()) {
 				string file = "";
 				int gh = 0;
 				int l = 0, t = 0, w = 0, h = 0;
+			if (js_cfg["dialog"]["box"].is_object()) {
 				if (js_cfg["dialog"]["box"]["file"].is_string()) {
 					file = js_cfg["dialog"]["box"]["file"];
 					gh = LoadGraph(file.c_str());
@@ -202,7 +202,27 @@ namespace Game {
 				if (js_cfg["dialog"]["box"]["height"].is_number_integer()) {
 					h = js_cfg["dialog"]["box"]["height"];
 				}
-				Dialog::ApplyCongig(gh, l, t, w, h);
+				Dialog::ApplyMsgWndCongig(gh, l, t, w, h);
+			}
+			if (js_cfg["dialog"]["speaker"].is_object()) {
+				l = t = 0;
+				if (js_cfg["dialog"]["speaker"]["left"].is_number_integer()) {
+					l = js_cfg["dialog"]["speaker"]["left"];
+				}
+				if (js_cfg["dialog"]["speaker"]["top"].is_number_integer()) {
+					t = js_cfg["dialog"]["speaker"]["top"];
+				}
+				Dialog::ApplyMsgSpkConfig(l, t);
+			}
+			if (js_cfg["dialog"]["text"].is_object()) {
+				l = t = 0;
+				if (js_cfg["dialog"]["text"]["left"].is_number_integer()) {
+					l = js_cfg["dialog"]["text"]["left"];
+				}
+				if (js_cfg["dialog"]["text"]["top"].is_number_integer()) {
+					t = js_cfg["dialog"]["text"]["top"];
+				}
+				Dialog::ApplyMsgTxtConfig(l, t);
 			}
 		}
 

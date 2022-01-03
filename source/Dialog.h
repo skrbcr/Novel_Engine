@@ -23,6 +23,10 @@ namespace Game {
 		static int msgwnd_top;		// メッセージボックスの上端
 		static int msgwnd_width;	// メッセージボックスの幅
 		static int msgwnd_height;	// メッセージボックスの高さ
+		static int msgspk_left;		// 話者の左端（相対座標）
+		static int msgspk_top;		// 話者の上端（相対座標）
+		static int msgtxt_left;		// 表示テキストの左端（相対座標）
+		static int msgtxt_top;		// 表示テキストの上端（相対座標）
 
 	private:
 		string strSpeaker;		// 話者文字列
@@ -55,15 +59,22 @@ namespace Game {
 			nWordContnet = (size_t)0;
 		}
 
-		/// <summary>
-		/// 設定を適用
-		/// </summary>
-		static void ApplyCongig(int gh, int left, int top, int width, int height) {
+		static void ApplyMsgWndCongig(int gh, int left, int top, int width, int height) {
 			gh_box = gh;
 			msgwnd_left = left;
 			msgwnd_top = top;
 			msgwnd_width = width;
 			msgwnd_height = height;
+		}
+
+		static void ApplyMsgSpkConfig(int left, int top) {
+			msgspk_left = left;
+			msgspk_top = top;
+		}
+
+		static void ApplyMsgTxtConfig(int left, int top) {
+			msgtxt_left = left;
+			msgtxt_top = top;
 		}
 
 		/// <summary>

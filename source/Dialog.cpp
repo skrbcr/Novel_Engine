@@ -6,6 +6,10 @@ namespace Game {
 	int Dialog::msgwnd_top = 0;
 	int Dialog::msgwnd_width = 0;
 	int Dialog::msgwnd_height = 0;
+	int Dialog::msgspk_left = 0;
+	int Dialog::msgspk_top = 0;
+	int Dialog::msgtxt_left = 0;
+	int Dialog::msgtxt_top = 0;
 
 	void Dialog::Set(string_view speaker, string_view content) {
 		strSpeaker = speaker;
@@ -23,7 +27,7 @@ namespace Game {
 		DrawGraph(msgwnd_left, msgwnd_top, gh_box, TRUE);
 
 		// ˜bŽÒ‚Ì•`‰æ
-		DrawStringToHandle(msgwnd_left + 70, msgwnd_top + 45, strSpeaker.c_str(), 0xFFFF00, font1);
+		DrawStringToHandle(msgwnd_left + msgspk_left, msgwnd_top + msgspk_top, strSpeaker.c_str(), 0xFFFF00, font1);
 
 		switch (status)
 		{
@@ -55,8 +59,8 @@ namespace Game {
 
 		// “à—e‚Ì•`‰æ
 		int nLine = 0;
-		int drawX = msgwnd_left + 70;
-		int drawY = msgwnd_top + 95;
+		int drawX = msgwnd_left + msgtxt_left;
+		int drawY = msgwnd_top + msgtxt_top;
 		int drawY_span = 50;
 		color_t color_now = 0xFFFFFF;
 		int fh_now = font1;
@@ -68,7 +72,7 @@ namespace Game {
 				DrawStringToHandle(drawX, drawY + nLine * drawY_span, strContDisp.substr(j, i - j).c_str(), color_now, fh_now);
 				j = i + 1;
 				nLine++;
-				drawX = msgwnd_left + 70;
+				drawX = msgwnd_left + msgtxt_left;
 			}
 			else if (strContDisp[i] == '\\' && i + 3 < nLenContent && strContDisp[i + 3] == '\\') {
 				switch (strContDisp[i + 1])
@@ -78,21 +82,21 @@ namespace Game {
 					{
 					case '0':
 						fh_now = font1;
-						drawY = msgwnd_top + 95;
+						drawY = msgwnd_top + msgtxt_top;
 						if (drawY_span < 50) {
 							drawY_span = 50;
 						}
 						break;
 					case '1':
 						fh_now = font4;
-						drawY = msgwnd_top + 105;
+						drawY = msgwnd_top + msgtxt_top + 10;
 						if (drawY_span < 100) {
 							drawY_span = 100;
 						}
 						break;
 					case '2':
 						fh_now = font5;
-						drawY = msgwnd_top + 95;
+						drawY = msgwnd_top + msgtxt_top;
 						if (drawY_span < 25 || i == 0) {
 							drawY_span = 25;
 						}
