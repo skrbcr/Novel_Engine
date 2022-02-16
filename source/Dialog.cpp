@@ -10,6 +10,68 @@ namespace Game {
 	int Dialog::msgspk_top = 0;
 	int Dialog::msgtxt_left = 0;
 	int Dialog::msgtxt_top = 0;
+	vector<Font> Dialog::fontList = vector<Font>(10);
+	vector<color_t> Dialog::colorList = vector<color_t>(10);
+	color_t Dialog::msgspk_color = 0x000000;
+
+	void Dialog::ApplyConfig(json& js) {
+		// メッセージボックス
+		if (js["box"].is_object()) {
+			if (js["box"]["file"].is_string()) {
+				string strtmp = js["box"]["file"];
+				gh_box = LoadGraph(strtmp.c_str());
+			}
+			if (js["box"]["left"].is_number_integer()) {
+				msgwnd_left = js["box"]["left"];
+			}
+			if (js["box"]["top"].is_number_integer()) {
+				msgwnd_top = js["box"]["top"];
+			}
+			if (js["box"]["width"].is_number_integer()) {
+				msgwnd_width = js["box"]["width"];
+			}
+			if (js["box"]["height"].is_number_integer()) {
+				msgwnd_height = js["box"]["height"];
+			}
+		}
+		// 位置指定（話者）
+		if (js["speaker"].is_object()) {
+			if (js["speaker"]["left"].is_number_integer()) {
+				msgspk_left = js["speaker"]["left"];
+			}
+			if (js["speaker"]["top"].is_number_integer()) {
+				msgspk_top = js["speaker"]["top"];
+			}
+			if (js["speaker"]["color"].is_string()) {
+				string strtmp = js["speaker"]["color"];
+				msgspk_color = static_cast<unsigned>(std::stoul(strtmp, nullptr, 16));
+			}
+		}
+		// 位置指定（内容）
+		if (js["text"].is_object()) {
+			if (js["text"]["left"].is_number_integer()) {
+				msgtxt_left = js["text"]["left"];
+			}
+			if (js["text"]["top"].is_number_integer()) {
+				msgtxt_top = js["text"]["top"];
+			}
+		}
+		// フォント
+		if (js["font"].is_array()) {
+
+		}
+		// 文字色
+		if (js["color"].is_array()) {
+			int n = static_cast<int>(std::fmin(10, js["color"].size()));
+			for (int i = 0; i < n; ++i) {
+				string strtmp = "";
+				if (js["color"][i].is_string()) {
+					strtmp = js["color"][i];
+					colorList[i] = static_cast<unsigned>(std::stoul(strtmp, nullptr, 16));
+				}
+			}
+		}
+	}
 
 	void Dialog::Set(string_view speaker, string_view content) {
 		strSpeaker = speaker;
@@ -27,7 +89,7 @@ namespace Game {
 		DrawGraph(msgwnd_left, msgwnd_top, gh_box, TRUE);
 
 		// 話者の描画
-		DrawStringToHandle(msgwnd_left + msgspk_left, msgwnd_top + msgspk_top, strSpeaker.c_str(), 0xFFFF00, font1);
+		DrawStringToHandle(msgwnd_left + msgspk_left, msgwnd_top + msgspk_top, strSpeaker.c_str(), msgspk_color, font1);
 
 		switch (status)
 		{
@@ -62,7 +124,7 @@ namespace Game {
 		int drawX = msgwnd_left + msgtxt_left;
 		int drawY = msgwnd_top + msgtxt_top;
 		int drawY_span = 50;
-		color_t color_now = 0xFFFFFF;
+		color_t color_now = colorList[0];
 		int fh_now = font1;
 		size_t i;
 		size_t j = (size_t)0;		// 描画開始位置
@@ -112,7 +174,7 @@ namespace Game {
 						// 描画x座標に加える
 						drawX += GetDrawStringWidthToHandle(strContDisp.substr(j, i - j).c_str(), static_cast<int>(i - j), fh_now);
 
-						color_now = colorList[strContDisp[i + 2] - 48];
+						color_now = colorList[static_cast<int64_t>(strContDisp[i + 2]) - 48];
 						j += i - j + 4;
 					}
 					break;

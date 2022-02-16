@@ -1,16 +1,31 @@
 #pragma once
+#include <cmath>
+#include <vector>
 #include <string>
 #include <string_view>
 #include "Global.h"
 #include "Utilities.h"
 
-using string = std::string;
-using string_view = std::string_view;
+using std::vector;
+using std::string;
+using std::string_view;
 
 namespace Game {
 	// 文字色リスト(処理の都合上、10個まで登録可能)
-	constexpr color_t colorList[10] =
-	{ 0xFFFFFF, 0xff0000, 0xFFCCFF, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000 };
+	//constexpr color_t colorList[10] =
+	//{ 0xFFFFFF, 0xff0000, 0xFFCCFF, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000 };
+
+	struct Font {
+		int fh = 0;
+		int height = 0;
+	};
+
+	struct FontName {
+		string strFont = "";
+		int size = 0;
+		int thick = 0;
+	};
+	
 
 	/// <summary>
 	/// セリフクラス
@@ -25,8 +40,11 @@ namespace Game {
 		static int msgwnd_height;	// メッセージボックスの高さ
 		static int msgspk_left;		// 話者の左端（相対座標）
 		static int msgspk_top;		// 話者の上端（相対座標）
+		static color_t msgspk_color;// 話者の文字色
 		static int msgtxt_left;		// 表示テキストの左端（相対座標）
 		static int msgtxt_top;		// 表示テキストの上端（相対座標）
+		static vector<Font> fontList;		// フォントリスト
+		static vector<color_t> colorList;	// 文字色リスト
 
 	private:
 		string strSpeaker;		// 話者文字列
@@ -59,23 +77,7 @@ namespace Game {
 			nWordContnet = (size_t)0;
 		}
 
-		static void ApplyMsgWndCongig(int gh, int left, int top, int width, int height) {
-			gh_box = gh;
-			msgwnd_left = left;
-			msgwnd_top = top;
-			msgwnd_width = width;
-			msgwnd_height = height;
-		}
-
-		static void ApplyMsgSpkConfig(int left, int top) {
-			msgspk_left = left;
-			msgspk_top = top;
-		}
-
-		static void ApplyMsgTxtConfig(int left, int top) {
-			msgtxt_left = left;
-			msgtxt_top = top;
-		}
+		static void ApplyConfig(json& js);
 
 		/// <summary>
 		/// Dialogを登録
