@@ -11,10 +11,6 @@ using std::string;
 using std::string_view;
 
 namespace Game {
-	// 文字色リスト(処理の都合上、10個まで登録可能)
-	//constexpr color_t colorList[10] =
-	//{ 0xFFFFFF, 0xff0000, 0xFFCCFF, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000 };
-
 	struct Font {
 		int fh = 0;
 		int height = 0;
