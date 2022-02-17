@@ -201,29 +201,9 @@ namespace Game {
 		}
 
 		// É^ÉCÉgÉãâÊñ ÇÃê›íË
-		string strBack = "";
-		string strBgm = "";
-		double bgmVol = 1.0;
-		bool showVer = false;
 		if (js_cfg["title"].is_object()) {
-			if (js_cfg["title"]["back"].is_array()) {
-				if (js_cfg["title"]["back"][0].is_string()) {
-					strBack =js_cfg["title"]["back"][0];
-				}
-			}
-			if (js_cfg["title"]["bgm"].is_array()) {
-				if (js_cfg["title"]["bgm"][0].is_string()) {
-					strBgm = js_cfg["title"]["bgm"][0];
-				}
-				if (js_cfg["title"]["bgm"][1].is_number()) {
-					bgmVol = js_cfg["title"]["bgm"][1];
-				}
-			}
-			if (js_cfg["title"]["version"].is_boolean()) {
-				showVer = js_cfg["title"]["version"];
-			}
+			title.ApplyConfig(js_cfg["title"]);
 		}
-		title = Title(strBack, strBgm, bgmVol, showVer);
 	}
 
 	void GameMain() {

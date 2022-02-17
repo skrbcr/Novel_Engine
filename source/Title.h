@@ -30,11 +30,15 @@ namespace Game {
 
 		}
 
-		Title(string_view strBackImgFile, string_view strBgmFile, double bgmVol, bool showVer);
-
 		~Title() {
 
 		}
+
+		/// <summary>
+		/// ê›íËÇÃìKóp
+		/// </summary>
+		/// <param name="js">json["title"]</param>
+		void ApplyConfig(json& js);
 
 		/// <summary>
 		/// 

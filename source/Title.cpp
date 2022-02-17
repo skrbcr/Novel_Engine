@@ -2,20 +2,32 @@
 #include "Image.h"
 
 namespace Game {
-	Title::Title(string_view strBackImgFile, string_view strBgmFile, double bgmVol, bool showVer) {
-		gh_back = LoadGraph(strBackImgFile.data());
-		if (gh_back == -1) {
-			ErrorLog(ER_IMG_LOAD, strBackImgFile.data());
+	void Title::ApplyConfig(json& js) {
+		string strtmp = "";
+		if (js["back"].is_array()) {
+			if (js["back"][0].is_string()) {
+				strtmp = js["back"][0];
+				gh_back = LoadGraph(strtmp.data());
+				if (gh_back == -1) {
+					ErrorLog(ER_IMG_LOAD, strtmp);
+				}
+			}
 		}
-		sh_bgm = LoadSoundMem(strBgmFile.data());
-		if (sh_bgm == -1) {
-			ErrorLog(ER_SND_LOAD, strBgmFile.data());
+		if (js["bgm"].is_array()) {
+			if (js["bgm"][0].is_string()) {
+				strtmp = js["bgm"][0];
+				sh_bgm = LoadSoundMem(strtmp.data());
+				if (sh_bgm == -1) {
+					ErrorLog(ER_SND_LOAD, strtmp);
+				}
+			}
+			if (js["bgm"][1].is_number()) {
+				this->bgmVol = js["bgm"][1];
+			}
 		}
-		else {
-			this->bgmVol = bgmVol;
+		if (js["version"].is_boolean()) {
+			showVerFlag = js["version"];
 		}
-
-		showVerFlag = showVer;
 
 		width_hajime = GetDrawStringWidthToHandle((const char*)u8"‚Í‚¶‚ß‚©‚ç", static_cast<int>(strlen((const char*)u8"‚Í‚¶‚ß‚©‚ç")), font6);
 		width_tuduki = GetDrawStringWidthToHandle((const char*)u8"‚Â‚Ã‚«‚©‚ç", static_cast<int>(strlen((const char*)u8"‚Â‚Ã‚«‚©‚ç")), font6);
