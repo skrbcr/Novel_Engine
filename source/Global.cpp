@@ -145,7 +145,7 @@ namespace Game {
 				break;
 			case ER_JSON_RULE:
 				ofs << (const char*)u8"Catastrophic: JSONファイルがゲーム製作の仕様書に従っていません！\n" << (const char*)u8"\tファイル名: " << state1 <<
-					(const char*)u8"\n\t詳細: ゲーム制作の仕様書を見直してください。" << endl;
+					(const char*)u8"\n\t詳細: ゲーム制作の仕様書を見直してください。" << state2 << endl;
 				break;
 			case ER_PLC_SET:
 				ofs << (const char*)u8"Catastrophic: Placeの設定でエラーが発生しました！\n" << (const char*)u8"\tPlace no: " << state1 <<

@@ -61,7 +61,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetMainWindowClassName(Game::SOFT_NAME);		// ウィンドウクラス名を登録
 	SetAlwaysRunFlag(TRUE);							// 非アクティブ時も実行
 	//SetWindowIconID(1);							// アイコン（.icoファイルとicon.rcが必要。引数はicon.rcで設定した任意のアイコンID）
-	SetOutApplicationLogValidFlag(FALSE);			// ログを出力しない
+	//SetOutApplicationLogValidFlag(FALSE);			// ログを出力しない
 	ChangeWindowMode(TRUE);							// フルスクリーンにしない
 	SetGraphMode(1280, 720, 32);					// ウィンドウサイズと色ビット数の指定
 	SetWindowSizeExtendRate(1.0);					// 実際に表示するウィンドウサイズに変更
@@ -145,8 +145,8 @@ namespace Game {
 
 		// ゲームタイトルの設定
 		if (js_cfg["game"].is_object()) {
-			if (js_cfg["game"]["name"].is_string()) {
-				strGameName = js_cfg["game"]["name"];
+			if (js_cfg["game"]["title"].is_string()) {
+				strGameName = js_cfg["game"]["title"];
 			}
 			if (js_cfg["game"]["version"].is_string()) {
 				strGameVersion = js_cfg["game"]["version"];
@@ -158,24 +158,24 @@ namespace Game {
 		// システムSEの読み込み
 		string tmp = "";
 		if (js_cfg["se"].is_object()) {
-			if (js_cfg["se"]["cursor"].is_string()) {
-				tmp = js_cfg["se"]["cursor"];
+			if (js_cfg["se"]["sound"]["cursor"].is_string()) {
+				tmp = js_cfg["se"]["sound"]["cursor"];
 				sh_cursor = LoadSoundMem(tmp.c_str());
 			}
-			if (js_cfg["se"]["decide"].is_string()) {
-				tmp = js_cfg["se"]["decide"];
+			if (js_cfg["se"]["sound"]["decide"].is_string()) {
+				tmp = js_cfg["se"]["sound"]["decide"];
 				sh_decide = LoadSoundMem(tmp.c_str());
 			}
-			if (js_cfg["se"]["cancel"].is_string()) {
-				tmp = js_cfg["se"]["cancel"];
+			if (js_cfg["se"]["sound"]["cancel"].is_string()) {
+				tmp = js_cfg["se"]["sound"]["cancel"];
 				sh_cancel = LoadSoundMem(tmp.c_str());
 			}
-			if (js_cfg["se"]["success"].is_string()) {
-				tmp = js_cfg["se"]["success"];
+			if (js_cfg["se"]["sound"]["success"].is_string()) {
+				tmp = js_cfg["se"]["sound"]["success"];
 				sh_success = LoadSoundMem(tmp.c_str());
 			}
-			if (js_cfg["se"]["fail"].is_string()) {
-				tmp = js_cfg["se"]["fail"];
+			if (js_cfg["se"]["sound"]["fail"].is_string()) {
+				tmp = js_cfg["se"]["sound"]["fail"];
 				sh_fail = LoadSoundMem(tmp.c_str());
 			}
 		}

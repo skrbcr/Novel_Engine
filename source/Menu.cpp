@@ -34,7 +34,7 @@ namespace Game {
 			js_saveFile[i] = json::object();
 			js_saveFile[i]["header"]["soft"]["name"] = SOFT_NAME;
 			js_saveFile[i]["header"]["soft"]["ver"] = SOFT_VER;
-			js_saveFile[i]["header"]["game"]["name"] = strGameName;
+			js_saveFile[i]["header"]["game"]["title"] = strGameName;
 			js_saveFile[i]["header"]["game"]["ver"] = strGameVersion;
 			js_saveFile[i]["save"]["time"] = saveData[i].saveTime;
 			js_saveFile[i]["save"]["count"] = saveData[i].saveCount;
