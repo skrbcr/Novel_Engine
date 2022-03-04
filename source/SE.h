@@ -12,8 +12,8 @@ using nlohmann::json;
 namespace Game {
 	class SE {
 	private:
-		vector<int> vsh;
-		double vol;
+		vector<int> vsh;	// サウンドハンドル配列
+		double vol;			// 音量（0.0~1.0）
 
 	public:
 		SE() {
@@ -27,9 +27,7 @@ namespace Game {
 
 		void ApplayConfig(json& js);
 
-		void ChangeVolume(double volume) {
-			vol = volume;
-		}
+		void ChangeVolume(double volume);
 
 		void Play(int i);
 	};

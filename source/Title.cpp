@@ -25,6 +25,20 @@ namespace Game {
 				this->bgmVol = js["bgm"][1];
 			}
 		}
+		if (js["se"].is_object()) {
+			if (js["se"]["cursor"].is_number_integer()) {
+				mapSe.insert(std::make_pair("cursor", js["se"]["cursor"]));
+			}
+			if (js["se"]["decide"].is_number_integer()) {
+				mapSe.insert(std::make_pair("decide", js["se"]["decide"]));
+			}
+			if (js["se"]["cancel"].is_number_integer()) {
+				mapSe.insert(std::make_pair("cancel", js["se"]["cancel"]));
+			}
+			if (js["se"]["reject"].is_number_integer()) {
+				mapSe.insert(std::make_pair("reject", js["se"]["reject"]));
+			}
+		}
 		if (js["version"].is_boolean()) {
 			showVerFlag = js["version"];
 		}
@@ -136,7 +150,7 @@ namespace Game {
 
 			// キー操作
 			if (GetSingleUp() || GetSingleDown()) {
-				PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK);
+				se.Play(mapSe["cursor"]);
 				if (opt_title == 0) {
 					opt_title = 1;
 				}
@@ -145,7 +159,7 @@ namespace Game {
 				}
 			}
 			if (GetSingleOk()) {
-				PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
+				se.Play(mapSe["decide"]);
 				if (opt_title == 0) {		// 開始処理開始
 					nPage = 3;
 					fcounter = -1;
@@ -172,18 +186,18 @@ namespace Game {
 			case 1:
 			case 2:
 				if (saveData[opt_load].saveCount != 0) {
-					PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
+					se.Play(mapSe["decide"]);
 					nPage = 4;
 					fcounter = -1;
 					bgm.SetEffect(BGM_effct::FADE_OUT, 120);
 				}
 				else {
-					PlaySoundMem(sh_fail, DX_PLAYTYPE_BACK);
+					se.Play(mapSe["reject"]);
 				}
 				break;
 			case 3:
 			case -2:
-				PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
+				se.Play(mapSe["cancel"]);
 				nPage = 1;
 				fcounter = -1;
 				break;

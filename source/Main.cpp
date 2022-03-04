@@ -76,10 +76,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	char key[256];								// キー入力配列
 
 	Game::MakeHandles();
-
-	Game::effect = Game::Effect();
-	Game::bgm = Game::BGM();
-
 	Game::SetConfig();
 
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0) {
@@ -156,35 +152,13 @@ namespace Game {
 
 	void SetConfig() {
 		// システムSEの読み込み
-		string tmp = "";
 		if (js_cfg["se"].is_object()) {
-			if (js_cfg["se"]["sound"]["cursor"].is_string()) {
-				tmp = js_cfg["se"]["sound"]["cursor"];
-				sh_cursor = LoadSoundMem(tmp.c_str());
-			}
-			if (js_cfg["se"]["sound"]["decide"].is_string()) {
-				tmp = js_cfg["se"]["sound"]["decide"];
-				sh_decide = LoadSoundMem(tmp.c_str());
-			}
-			if (js_cfg["se"]["sound"]["cancel"].is_string()) {
-				tmp = js_cfg["se"]["sound"]["cancel"];
-				sh_cancel = LoadSoundMem(tmp.c_str());
-			}
-			if (js_cfg["se"]["sound"]["success"].is_string()) {
-				tmp = js_cfg["se"]["sound"]["success"];
-				sh_success = LoadSoundMem(tmp.c_str());
-			}
-			if (js_cfg["se"]["sound"]["fail"].is_string()) {
-				tmp = js_cfg["se"]["sound"]["fail"];
-				sh_fail = LoadSoundMem(tmp.c_str());
-			}
+			se.ApplayConfig(js_cfg["se"]);
 		}
-
 		// ダイアログ
 		if (js_cfg["dialog"].is_object()) {
 			Dialog::ApplyConfig(js_cfg["dialog"]);
 		}
-
 		// キャラクター画像
 		if (js_cfg["chara"].is_object()) {
 			if (js_cfg["chara"]["img"].is_array()) {
@@ -199,7 +173,6 @@ namespace Game {
 				}
 			}
 		}
-
 		// タイトル画面の設定
 		if (js_cfg["title"].is_object()) {
 			title.ApplyConfig(js_cfg["title"]);

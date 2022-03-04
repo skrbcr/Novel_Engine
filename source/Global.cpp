@@ -51,6 +51,7 @@ namespace Game {
 
 	class Effect effect = Effect();
 	class BGM bgm = BGM();
+	class SE se = SE();
 
 	int index_place = 0;
 

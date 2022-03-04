@@ -6,6 +6,7 @@
 #include "DxLib.h"
 #include "Effect.h"
 #include "BGM.h"
+#include "SE.h"
 
 using std::string;
 using std::string_view;
@@ -48,6 +49,7 @@ namespace Game {
 
 	extern class Effect effect;
 	extern class BGM bgm;
+	extern class SE se;
 
 	struct SaveData
 	{

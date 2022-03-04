@@ -11,13 +11,30 @@ namespace Game {
 			for (int i = 0; i < n; ++i) {
 				if (js["sound"][i].is_string()) {
 					string tmp = js["sound"][i];
-					vsh[i] = LoadSoundMem(tmp.c_str());
-					if (vsh[i] == 0 || vsh[i] == -1) {
+					if (!tmp.empty()) {
+						vsh[i] = LoadSoundMem(tmp.c_str());
+						if (vsh[i] == 0 || vsh[i] == -1) {
+							vsh[i] = 0;
+							ErrorLog(ER_SND_LOAD, tmp);
+						}
+					}
+					else {
 						vsh[i] = 0;
-						ErrorLog(ER_SND_LOAD, tmp);
 					}
 				}
 			}
+		}
+	}
+
+	void SE::ChangeVolume(double volume) {
+		if (volume <= 0.0) {
+			vol = 0.0;
+		}
+		else if (volume >= 1.0) {
+			vol = 1.0;
+		}
+		else {
+			vol = volume;
 		}
 	}
 

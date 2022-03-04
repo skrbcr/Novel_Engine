@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <map>
 #include "DxLib.h"
 #include "Global.h"
 #include "Button.h"
@@ -18,7 +19,7 @@ namespace Game {
 
 		int sh_bgm = 0;			// BGM サウンドハンドル
 		double bgmVol = 1.0;	// BGM 音量
-
+		std::map<const char*, int> mapSe;
 		
 		Button button_title = Button();		// タイトル画面のボタン
 		Button button_load = Button();		// ロード画面のボタン
