@@ -177,6 +177,16 @@ namespace Game {
 		if (js_cfg["title"].is_object()) {
 			title.ApplyConfig(js_cfg["title"]);
 		}
+		// ÉtÉHÉìÉgÇÃì«Ç›çûÇ›
+		if (js_cfg["font"].is_array()) {
+			string strFontFile = "";
+			char lpszFontFile[64] = { '\000' };
+			for (const auto& str : js_cfg["font"]) {
+				strFontFile = str;
+				ConvertStringCharCodeFormat(DX_CHARCODEFORMAT_UTF8, strFontFile.c_str(), DX_CHARCODEFORMAT_SHIFTJIS, lpszFontFile);
+				AddFontResourceEx(lpszFontFile, FR_PRIVATE, NULL);
+			}
+		}
 	}
 
 	void GameMain() {
