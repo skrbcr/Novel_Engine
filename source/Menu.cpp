@@ -80,7 +80,7 @@ namespace Game {
 			onMenu = true;
 		}
 		else if (onMenu && !onTitle && GetSingleCancel()) {	// メニュー中・タイトル戻り確認なし・キャンセルキー
-			PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
+			//PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
 			onMenu = false;
 		}
 		else if (!onMenu) {
@@ -145,16 +145,16 @@ namespace Game {
 			switch (button2.Main(false))
 			{
 			case 0:
-				PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
+				//PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
 				res = 1;
 				break;
 			case 1:
-				PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
+				//PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
 				onTitle = false;
 				button2.SetSelection(1);
 				break;
 			case -2:
-				PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
+				//PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
 				onTitle = false;
 				button2.SetSelection(1);
 				break;
@@ -171,14 +171,14 @@ namespace Game {
 			case 1:
 			case 2:
 				if (MakeSaveData(opt) == 0) {
-					PlaySoundMem(sh_success, DX_PLAYTYPE_BACK);
+					//PlaySoundMem(sh_success, DX_PLAYTYPE_BACK);
 				}
 				else {
-					PlaySoundMem(sh_fail, DX_PLAYTYPE_BACK);
+					//PlaySoundMem(sh_fail, DX_PLAYTYPE_BACK);
 				}
 				break;
 			case 3:
-				PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
+				//PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
 				onTitle = true;
 				break;
 			}

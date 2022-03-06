@@ -31,11 +31,11 @@ namespace Game {
 
 
 	/* SE */
-	int sh_cursor = 0;
-	int sh_decide = 0;
-	int sh_cancel = 0;
-	int sh_success = 0;
-	int sh_fail = 0;
+	//int sh_cursor = 0;
+	//int sh_decide = 0;
+	//int sh_cancel = 0;
+	//int sh_success = 0;
+	//int sh_fail = 0;
 
 	/* ƒtƒHƒ“ƒg */
 	int font1 = 0;
@@ -52,6 +52,7 @@ namespace Game {
 	class Effect effect = Effect();
 	class BGM bgm = BGM();
 	class SE se = SE();
+	vector<Font> vfont = vector<Font>();
 
 	int index_place = 0;
 

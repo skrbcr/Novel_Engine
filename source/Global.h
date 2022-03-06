@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <string>
 #include <string_view>
 #include <fstream>
@@ -8,6 +9,7 @@
 #include "BGM.h"
 #include "SE.h"
 
+using std::vector;
 using std::string;
 using std::string_view;
 using std::ofstream;
@@ -16,6 +18,11 @@ using nlohmann::json;
 //using color_t = unsigned int;		// 色
 
 namespace Game {
+	struct Font {
+		int fh = 0;
+		int height = 0;
+	};
+
 	//constexpr char GAME_CLASS[] = "skrb_novel";
 	constexpr char SOFT_NAME[] = "skrb_novel";
 	constexpr char SOFT_VER[] = "version 0.1.0";
@@ -41,15 +48,16 @@ namespace Game {
 	constexpr int ER_IMG_LOAD = 21;
 	constexpr int ER_SND_LOAD = 31;
 
-	extern int sh_cursor;			// カーソルSE(矢印キー・目立たせないOKキー)
-	extern int sh_decide;			// 決定SE
-	extern int sh_cancel;			// キャンセルSE
-	extern int sh_success;			// 成功SE(セーブ時)
-	extern int sh_fail;				// 失敗SE(セーブ時)
+	//extern int sh_cursor;			// カーソルSE(矢印キー・目立たせないOKキー)
+	//extern int sh_decide;			// 決定SE
+	//extern int sh_cancel;			// キャンセルSE
+	//extern int sh_success;			// 成功SE(セーブ時)
+	//extern int sh_fail;				// 失敗SE(セーブ時)
 
 	extern class Effect effect;
 	extern class BGM bgm;
 	extern class SE se;
+	extern vector<Font> vfont;
 
 	struct SaveData
 	{

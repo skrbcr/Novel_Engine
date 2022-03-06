@@ -41,7 +41,7 @@ namespace Game {
 			if (GetSingleRight()) {
 				if (span_hol != 0) {
 					index += span_hol;
-					PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
+					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
 					if (index > num - 1) {
 						index = 0;
 					}
@@ -51,7 +51,7 @@ namespace Game {
 			if (GetSingleLeft()) {
 				if (span_hol != 0) {
 					index -= span_hol;
-					PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
+					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
 					if (index < 0) {
 						index = num - 1;
 					}
@@ -61,7 +61,7 @@ namespace Game {
 			if (GetSingleUp()) {
 				if (span_ver != 0) {
 					index -= span_ver;
-					PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
+					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
 					if (index < 0) {
 						index = num - 1;
 					}
@@ -71,7 +71,7 @@ namespace Game {
 			if (GetSingleDown()) {
 				if (span_ver != 0) {
 					index += span_ver;
-					PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
+					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
 					if (index > num - 1) {
 						index = 0;
 					}

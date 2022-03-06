@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <string_view>
+#include "nlohmann/json.hpp"
 #include "Global.h"
 #include "Utilities.h"
 
@@ -11,16 +12,11 @@ using std::string;
 using std::string_view;
 
 namespace Game {
-	struct Font {
-		int fh = 0;
-		int height = 0;
-	};
-
-	struct FontName {
-		string strFont = "";
-		int size = 0;
-		int thick = 0;
-	};
+	//struct FontName {
+	//	string strFont = "";
+	//	int size = 0;
+	//	int thick = 0;
+	//};
 	
 
 	/// <summary>

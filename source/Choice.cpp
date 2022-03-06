@@ -18,7 +18,7 @@ namespace Game {
 
 		count = button.Main(onMenu);
 		if (count >= 0) {
-			PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK, TRUE);
+			//PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK, TRUE);
 		}
 
 		return count;

@@ -121,6 +121,10 @@ namespace Game {
 		DeleteFontToHandle(font3);
 		DeleteFontToHandle(font4);
 		DeleteFontToHandle(font5);
+
+		for (auto& f : vfont) {
+			DeleteFontToHandle(f.fh);
+		}
 	}
 
 	void LoadConfig() {
@@ -178,13 +182,33 @@ namespace Game {
 			title.ApplyConfig(js_cfg["title"]);
 		}
 		// フォントの読み込み
-		if (js_cfg["font"].is_array()) {
+		if (js_cfg["font"]["data"].is_array()) {
 			string strFontFile = "";
 			char lpszFontFile[64] = { '\000' };
-			for (const auto& str : js_cfg["font"]) {
-				strFontFile = str;
-				ConvertStringCharCodeFormat(DX_CHARCODEFORMAT_UTF8, strFontFile.c_str(), DX_CHARCODEFORMAT_SHIFTJIS, lpszFontFile);
-				AddFontResourceEx(lpszFontFile, FR_PRIVATE, NULL);
+			for (const auto& str : js_cfg["font"]["data"]) {
+				if (str.is_string()) {
+					strFontFile = str;
+					ConvertStringCharCodeFormat(DX_CHARCODEFORMAT_UTF8, strFontFile.c_str(), DX_CHARCODEFORMAT_SHIFTJIS, lpszFontFile);
+					AddFontResourceEx(lpszFontFile, FR_PRIVATE, NULL);
+				}
+				else {
+					ErrorLog(ER_JSON_RULE, "Config.json", "フォントデータファイルの指定に誤りがあります。");
+				}
+			}
+		}
+		if (js_cfg["font"]["font"].is_array()) {
+			for (const auto& jsf : js_cfg["font"]["font"]) {
+				Font f = Font();
+				string str = string();
+				if (jsf["name"].is_string() && jsf["size"].is_number_integer()) {
+					str = jsf["name"];
+					f.fh = CreateFontToHandle(str.c_str(), jsf["size"], 0);
+					f.height = jsf["size"];
+					vfont.push_back(f);
+				}
+				else {
+					ErrorLog(ER_JSON_RULE, "Config.json", "作成するフォントの指定に誤りがあります。");
+				}
 			}
 		}
 	}
