@@ -36,7 +36,7 @@ namespace Game {
 	static void LoadConfig();
 
 	// Config.json の適用
-	static void SetConfig();
+	static bool SetConfig();
 
 	// ゲームのメインループ処理
 	static void GameMain();
@@ -66,17 +66,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetGraphMode(1280, 720, 32);					// ウィンドウサイズと色ビット数の指定
 	SetWindowSizeExtendRate(1.0);					// 実際に表示するウィンドウサイズに変更
 
-	/* 初期化 */
 	if (DxLib_Init() == -1) {
 		return -1;
 	}
-
 	SetDrawScreen(DX_SCREEN_BACK);				// ダブルバッファの使用
 
 	char key[256];								// キー入力配列
 
 	Game::MakeHandles();
-	Game::SetConfig();
+	if (!Game::SetConfig()) {
+		Game::DeleteHandles();
+		DxLib_End();
+		return 0;
+	}
 
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0) {
 		Game::SetKey(key);
@@ -84,8 +86,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 
 	Game::DeleteHandles();
-
-	/* 終了処理 */
 	DxLib_End();
 
 	return 0;
@@ -154,7 +154,7 @@ namespace Game {
 		}
 	}
 
-	void SetConfig() {
+	bool SetConfig() {
 		// システムSEの読み込み
 		if (js_cfg["se"].is_object()) {
 			se.ApplayConfig(js_cfg["se"]);
@@ -197,13 +197,19 @@ namespace Game {
 			}
 		}
 		if (js_cfg["font"]["font"].is_array()) {
-			for (const auto& jsf : js_cfg["font"]["font"]) {
+			for (auto& jsf : js_cfg["font"]["font"]) {
 				Font f = Font();
 				string str = string();
 				if (jsf["name"].is_string() && jsf["size"].is_number_integer()) {
 					str = jsf["name"];
-					f.fh = CreateFontToHandle(str.c_str(), jsf["size"], 0);
+					f.fh = CreateFontToHandle(str.c_str(), jsf["size"], -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
 					f.height = jsf["size"];
+					if (jsf["lspace"].is_number_integer()) {
+						f.lspace = jsf["lspace"];
+					}
+					else {
+						f.lspace = f.height * 2;
+					}
 					vfont.push_back(f);
 				}
 				else {
@@ -211,6 +217,14 @@ namespace Game {
 				}
 			}
 		}
+		if (vfont.size() == 0) {
+			ErrorLog(ER_JSON_RULE, "Config.json", "少なくとも 1つは正常なフォントを作成してください。");
+			return false;
+		}
+		if (vfont.size() > 10) {
+			ErrorLog(ER_JSON_RULE, "Config.json", "10個を超えるフォントが作成されましたが、11個目以降は利用できません。");
+		}
+		return true;
 	}
 
 	void GameMain() {

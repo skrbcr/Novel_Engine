@@ -21,6 +21,7 @@ namespace Game {
 	struct Font {
 		int fh = 0;
 		int height = 0;
+		int lspace = 0;
 	};
 
 	//constexpr char GAME_CLASS[] = "skrb_novel";

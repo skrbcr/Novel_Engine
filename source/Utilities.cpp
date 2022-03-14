@@ -13,7 +13,7 @@ namespace Game {
 			else {
 				// 描画指定コマンドを除外
 				if (str[i] == u8'\\' && i + 3 < zStrLen && str[i + 3] == u8'\\') {
-					if (str[i + 1] == u8'c' || str[i + 1] == u8's') {
+					if (str[i + 1] == u8'c' || str[i + 1] == u8'f') {
 						if (str[i + 2] >= u8'0' && str[i + 2] <= u8'9') {
 							i += 3;
 							continue;
@@ -41,7 +41,7 @@ namespace Game {
 			if (c >= 0x00 && c <= 0x7F) {
 				// 描画指定コマンドは何もせずに、そのまま格納
 				if (str[i] == u8'\\' && i + 3 < zStrLen && str[i + 3] == u8'\\') {
-					if (str[i + 1] == u8'c' || str[i + 1] == u8's') {
+					if (str[i + 1] == u8'c' || str[i + 1] == u8'f') {
 						if (str[i + 2] >= u8'0' && str[i + 2] <= u8'9') {
 							strRes += str[i];
 							strRes += str[i + 1];

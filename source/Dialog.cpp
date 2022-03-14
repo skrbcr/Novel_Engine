@@ -123,9 +123,9 @@ namespace Game {
 		int nLine = 0;
 		int drawX = msgwnd_left + msgtxt_left;
 		int drawY = msgwnd_top + msgtxt_top;
-		int drawY_span = 50;
+		int drawY_span = vfont[0].lspace;
 		color_t color_now = colorList[0];
-		int fh_now = font1;
+		int fh_now = vfont[0].fh;
 		size_t i;
 		size_t j = (size_t)0;		// 描画開始位置
 
@@ -139,34 +139,52 @@ namespace Game {
 			else if (strContDisp[i] == '\\' && i + 3 < nLenContent && strContDisp[i + 3] == '\\') {
 				switch (strContDisp[i + 1])
 				{
-				case 's':			// サイズ変更
-					switch (strContDisp[i + 2])
-					{
-					case '0':
-						fh_now = font1;
-						drawY = msgwnd_top + msgtxt_top;
-						if (drawY_span < 50) {
-							drawY_span = 50;
+				//case 's':			// サイズ変更
+				//	switch (strContDisp[i + 2])
+				//	{
+				//	case '0':
+				//		fh_now = font1;
+				//		drawY = msgwnd_top + msgtxt_top;
+				//		if (drawY_span < 50) {
+				//			drawY_span = 50;
+				//		}
+				//		break;
+				//	case '1':
+				//		fh_now = font4;
+				//		drawY = msgwnd_top + msgtxt_top + 10;
+				//		if (drawY_span < 100) {
+				//			drawY_span = 100;
+				//		}
+				//		break;
+				//	case '2':
+				//		fh_now = font5;
+				//		drawY = msgwnd_top + msgtxt_top;
+				//		if (drawY_span < 25 || i == 0) {
+				//			drawY_span = 25;
+				//		}
+				//		break;
+				//	}
+				//	j += 4;
+				//	break;
+				case 'f':			// フォント変更
+					if (strContDisp[i + 2] >= '0' && strContDisp[i + 2] <= '9') {
+						size_t findex = static_cast<size_t>(strContDisp[i + 2]) - '0';
+						try {
+							fh_now = vfont.at(findex).fh;
+							if (vfont[findex].height < vfont[0].height && i == 0) {
+								drawY_span = vfont[findex].lspace;
+							}
+							else {
+								drawY_span = static_cast<int>(std::fmax(drawY_span, vfont[findex].lspace));
+							}
 						}
-						break;
-					case '1':
-						fh_now = font4;
-						drawY = msgwnd_top + msgtxt_top + 10;
-						if (drawY_span < 100) {
-							drawY_span = 100;
+						catch (const std::out_of_range&) {
+							ErrorLog(ER_JSON_RULE, "", std::to_string(findex) + "番目のフォントは存在しません");
 						}
-						break;
-					case '2':
-						fh_now = font5;
-						drawY = msgwnd_top + msgtxt_top;
-						if (drawY_span < 25 || i == 0) {
-							drawY_span = 25;
-						}
-						break;
 					}
 					j += 4;
 					break;
-				case 'c':
+				case 'c':			// 色変更
 					if (strContDisp[i + 2] >= 0x30 && strContDisp[i + 2] <= 0x39) {
 						// ここまでの文字列をまず描画
 						DrawStringToHandle(drawX, drawY + nLine * drawY_span, strContDisp.substr(j, i - j).c_str(), color_now, fh_now);
