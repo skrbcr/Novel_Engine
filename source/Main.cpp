@@ -1,5 +1,5 @@
 // skrbcr/Novel_Engine（https://github.com/skrbcr/Novel_Engine）
-// DXライブラリ使用のノベルゲームエンジン？のアルファ版 ver.0.2.0（予定）
+// DXライブラリ使用のノベルゲームエンジン？のアルファ版 ver.0.2.0
 // 
 // 配布ソースコードの一部に、以下のライブラリを含みます
 // 著作権表示の詳細は、"./nlohmann/json.hpp" や "../README.md" をご覧ください

@@ -24,9 +24,8 @@ namespace Game {
 		int lspace = 0;
 	};
 
-	//constexpr char GAME_CLASS[] = "skrb_novel";
 	constexpr char SOFT_NAME[] = "skrb_novel";
-	constexpr char SOFT_VER[] = "version 0.1.0";
+	constexpr char SOFT_VER[] = "version 0.2.0";
 
 	extern string strGameName;
 	extern string strGameVersion;
@@ -62,9 +61,6 @@ namespace Game {
 
 	struct SaveData
 	{
-		//const char* strheader = GAME_CLASS;		// ヘッダー文字列
-		//const char* strgm = strGameName.c_str();			// ゲーム名
-		//const char* strver = strGameVersion.c_str();		// ヴァージョン
 		time_t saveTime = 0;				// セーブ日時
 		int saveCount = 0;					// セーブ回数
 		int index_place = 0;				// Placeのindex
@@ -103,9 +99,6 @@ namespace Game {
 		MOVE_LEFT,		// 背景画像の左へ移動
 		WAIT,			// 待ち時間
 	};
-
-	// システムSE読み込み
-	//void SetSound();
 
 	/// <summary>
 	/// 単押しキー取得
