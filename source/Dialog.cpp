@@ -179,7 +179,8 @@ namespace Game {
 							}
 						}
 						catch (const std::out_of_range&) {
-							ErrorLog(ER_JSON_RULE, "", std::to_string(findex) + "番目のフォントは存在しません");
+							ErrorLog(ER_JSON_RULE, "", std::to_string(findex) + (const char*)u8"番目のフォントは存在しません");
+							strContent[i + 2] = '0';
 						}
 					}
 					j += 4;

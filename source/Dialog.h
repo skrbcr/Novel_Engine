@@ -12,13 +12,6 @@ using std::string;
 using std::string_view;
 
 namespace Game {
-	//struct FontName {
-	//	string strFont = "";
-	//	int size = 0;
-	//	int thick = 0;
-	//};
-	
-
 	/// <summary>
 	/// セリフクラス
 	/// </summary>

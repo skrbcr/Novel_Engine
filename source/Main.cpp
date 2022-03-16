@@ -192,7 +192,7 @@ namespace Game {
 					AddFontResourceEx(lpszFontFile, FR_PRIVATE, NULL);
 				}
 				else {
-					ErrorLog(ER_JSON_RULE, "Config.json", "フォントデータファイルの指定に誤りがあります。");
+					ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"フォントデータファイルの指定に誤りがあります。");
 				}
 			}
 		}
@@ -213,16 +213,16 @@ namespace Game {
 					vfont.push_back(f);
 				}
 				else {
-					ErrorLog(ER_JSON_RULE, "Config.json", "作成するフォントの指定に誤りがあります。");
+					ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"作成するフォントの指定に誤りがあります。");
 				}
 			}
 		}
 		if (vfont.size() == 0) {
-			ErrorLog(ER_JSON_RULE, "Config.json", "少なくとも 1つは正常なフォントを作成してください。");
+			ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"少なくとも 1つは正常なフォントを作成してください。");
 			return false;
 		}
 		if (vfont.size() > 10) {
-			ErrorLog(ER_JSON_RULE, "Config.json", "10個を超えるフォントが作成されましたが、11個目以降は利用できません。");
+			ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"10個を超えるフォントが作成されましたが、11個目以降は利用できません。");
 		}
 		return true;
 	}
