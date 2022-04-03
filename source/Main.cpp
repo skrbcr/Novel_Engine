@@ -163,6 +163,10 @@ namespace Game {
 		if (js_cfg["dialog"].is_object()) {
 			Dialog::ApplyConfig(js_cfg["dialog"]);
 		}
+		// 選択肢
+		if (js_cfg["choice"].is_object()) {
+			Choice::ApplyConfig(js_cfg["choice"]);
+		}
 		// キャラクター画像
 		if (js_cfg["chara"].is_object()) {
 			if (js_cfg["chara"]["img"].is_array()) {

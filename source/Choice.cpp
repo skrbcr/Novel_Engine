@@ -1,6 +1,14 @@
 #include "Choice.h"
 
 namespace Game {
+	int Choice::iSeDecide = 0;
+	void Choice::ApplyConfig(json& js) {
+		if (js["se"].is_object()) {
+			if (js["se"]["decide"].is_number_integer()) {
+				iSeDecide = js["se"]["decide"];
+			}
+		}
+	}
 	int Choice::Main() {
 		// ”wŒi
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 245);
@@ -18,7 +26,7 @@ namespace Game {
 
 		count = button.Main(onMenu);
 		if (count >= 0) {
-			//PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK, TRUE);
+			se.Play(iSeDecide);
 		}
 
 		return count;
