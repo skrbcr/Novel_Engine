@@ -1,21 +1,32 @@
 #include "Choice.h"
 
 namespace Game {
+	int Choice::iSeDecide = 0;
+	void Choice::ApplyConfig(json& js) {
+		if (js["se"].is_object()) {
+			if (js["se"]["decide"].is_number_integer()) {
+				iSeDecide = js["se"]["decide"];
+			}
+		}
+	}
 	int Choice::Main() {
 		// ”wŒi
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 245);
-		DrawBox(DLGBOX_LEFT + DLGBOX_WIDTH - width - 40, DLGBOX_TOP - 65 - 50 * num, DLGBOX_LEFT + DLGBOX_WIDTH, DLGBOX_TOP - 20, 0x007DDA, TRUE);
-		DrawBoxAA((float)(DLGBOX_LEFT + DLGBOX_WIDTH - width - 40), (float)(DLGBOX_TOP - 65 - 50 * num), (float)(DLGBOX_LEFT + DLGBOX_WIDTH), (float)(DLGBOX_TOP - 20), 0x004070, FALSE, 3.5f);
+		DrawBox(Dialog::msgwnd_left + Dialog::msgwnd_width - width - 40, Dialog::msgwnd_top - 65 - 50 * num,
+			Dialog::msgwnd_left + Dialog::msgwnd_width , Dialog::msgwnd_top - 20, 0x007DDA, TRUE);
+		DrawBoxAA(static_cast<float>(Dialog::msgwnd_left + Dialog::msgwnd_width - width - 40), static_cast<float>(Dialog::msgwnd_top - 65 - 50 * num),
+			static_cast<float>(Dialog::msgwnd_left + Dialog::msgwnd_width), static_cast<float>(Dialog::msgwnd_top - 20), 0x004070, FALSE, 3.5f);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		// ‘I‘ðŽˆ•\Ž¦
 		for (int i = 0; i < num; ++i) {
-			DrawStringToHandle(DLGBOX_LEFT + DLGBOX_WIDTH - width - 15, DLGBOX_TOP - 30 - 50 * (num - i), strOptList[i].data(), 0xFFFFFF, font1);
+			DrawStringToHandle(Dialog::msgwnd_left + Dialog::msgwnd_width - width - 15, Dialog::msgwnd_top - 30 - 50 * (num - i),
+				strOptList[i].data(), 0xFFFFFF, font1);
 		}
 
 		count = button.Main(onMenu);
 		if (count >= 0) {
-			PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK, TRUE);
+			se.Play(iSeDecide);
 		}
 
 		return count;
@@ -44,7 +55,7 @@ namespace Game {
 		button = Button(num);
 		button.SetGroup(1, 0);
 		for (int i = 0; i < num; ++i) {
-			button.SetButton(i, DLGBOX_LEFT + DLGBOX_WIDTH - width - 20, DLGBOX_TOP - 40 - 50 * (num - i), width, 45);
+			button.SetButton(i, Dialog::msgwnd_left + Dialog::msgwnd_width - width - 20, Dialog::msgwnd_top - 40 - 50 * (num - i), width, 45);
 		}
 	}
 }

@@ -3,10 +3,12 @@
 #include <ctime>
 #include <direct.h>
 #include <fstream>
+#include "nlohmann/json.hpp"
 #include "Global.h"
 #include "Button.h"
 
 using std::string;
+using nlohmann::json;
 
 namespace Game {
 	class Menu

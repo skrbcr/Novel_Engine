@@ -1,22 +1,77 @@
 #include "Dialog.h"
 
 namespace Game {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="str"></param>
-	/// <returns></returns>
-	static size_t strcount_sjis(string_view str);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="str"></param>
-	/// <param name="nCount"></param>
-	/// <returns></returns>
-	static string strextract_sjis(string_view str, size_t nCount);
-
 	int Dialog::gh_box = 0;
+	int Dialog::msgwnd_left = 0;
+	int Dialog::msgwnd_top = 0;
+	int Dialog::msgwnd_width = 0;
+	int Dialog::msgwnd_height = 0;
+	int Dialog::msgspk_left = 0;
+	int Dialog::msgspk_top = 0;
+	int Dialog::msgtxt_left = 0;
+	int Dialog::msgtxt_top = 0;
+	vector<Font> Dialog::fontList = vector<Font>(10);
+	vector<color_t> Dialog::colorList = vector<color_t>(10);
+	color_t Dialog::msgspk_color = 0x000000;
+
+	void Dialog::ApplyConfig(json& js) {
+		// メッセージボックス
+		if (js["box"].is_object()) {
+			if (js["box"]["file"].is_string()) {
+				string strtmp = js["box"]["file"];
+				gh_box = LoadGraph(strtmp.c_str());
+			}
+			if (js["box"]["left"].is_number_integer()) {
+				msgwnd_left = js["box"]["left"];
+			}
+			if (js["box"]["top"].is_number_integer()) {
+				msgwnd_top = js["box"]["top"];
+			}
+			if (js["box"]["width"].is_number_integer()) {
+				msgwnd_width = js["box"]["width"];
+			}
+			if (js["box"]["height"].is_number_integer()) {
+				msgwnd_height = js["box"]["height"];
+			}
+		}
+		// 位置指定（話者）
+		if (js["speaker"].is_object()) {
+			if (js["speaker"]["left"].is_number_integer()) {
+				msgspk_left = js["speaker"]["left"];
+			}
+			if (js["speaker"]["top"].is_number_integer()) {
+				msgspk_top = js["speaker"]["top"];
+			}
+			if (js["speaker"]["color"].is_string()) {
+				string strtmp = js["speaker"]["color"];
+				msgspk_color = static_cast<unsigned>(std::stoul(strtmp, nullptr, 16));
+			}
+		}
+		// 位置指定（内容）
+		if (js["text"].is_object()) {
+			if (js["text"]["left"].is_number_integer()) {
+				msgtxt_left = js["text"]["left"];
+			}
+			if (js["text"]["top"].is_number_integer()) {
+				msgtxt_top = js["text"]["top"];
+			}
+		}
+		// フォント
+		if (js["font"].is_array()) {
+
+		}
+		// 文字色
+		if (js["color"].is_array()) {
+			int n = static_cast<int>(std::fmin(10, js["color"].size()));
+			for (int i = 0; i < n; ++i) {
+				string strtmp = "";
+				if (js["color"][i].is_string()) {
+					strtmp = js["color"][i];
+					colorList[i] = static_cast<unsigned>(std::stoul(strtmp, nullptr, 16));
+				}
+			}
+		}
+	}
 
 	void Dialog::Set(string_view speaker, string_view content) {
 		strSpeaker = speaker;
@@ -25,16 +80,16 @@ namespace Game {
 		status = 0;
 		strContDisp = "";
 		index_strCont = 0;
-		nWordContnet = strcount_sjis(strContent);
+		nWordContnet = strcount_utf8(strContent.c_str());
 		fcounter = 0;
 	}
 
 	void Dialog::Draw() {
 		// メッセージボックス画像の描画
-		DrawGraph(DLGBOX_LEFT, DLGBOX_TOP, gh_box, TRUE);
+		DrawGraph(msgwnd_left, msgwnd_top, gh_box, TRUE);
 
 		// 話者の描画
-		DrawStringToHandle(DLGBOX_LEFT + 70, DLGBOX_TOP + 45, strSpeaker.c_str(), 0xFFFF00, font1);
+		DrawStringToHandle(msgwnd_left + msgspk_left, msgwnd_top + msgspk_top, strSpeaker.c_str(), msgspk_color, font1);
 
 		switch (status)
 		{
@@ -45,7 +100,7 @@ namespace Game {
 				index_strCont += 2;
 			}
 			if (index_strCont <= nWordContnet) {
-				strContDisp = strextract_sjis(strContent, index_strCont);
+				strContDisp = strextract_utf8(strContent.c_str(), index_strCont);
 				fcounter++;
 			}
 			else {
@@ -66,11 +121,11 @@ namespace Game {
 
 		// 内容の描画
 		int nLine = 0;
-		int drawX = DLGBOX_LEFT + 70;
-		int drawY = DLGBOX_TOP + 95;
-		int drawY_span = 50;
-		color_t color_now = 0xFFFFFF;
-		int fh_now = font1;
+		int drawX = msgwnd_left + msgtxt_left;
+		int drawY = msgwnd_top + msgtxt_top;
+		int drawY_span = vfont[0].lspace;
+		color_t color_now = colorList[0];
+		int fh_now = vfont[0].fh;
 		size_t i;
 		size_t j = (size_t)0;		// 描画開始位置
 
@@ -79,39 +134,58 @@ namespace Game {
 				DrawStringToHandle(drawX, drawY + nLine * drawY_span, strContDisp.substr(j, i - j).c_str(), color_now, fh_now);
 				j = i + 1;
 				nLine++;
-				drawX = DLGBOX_LEFT + 70;
+				drawX = msgwnd_left + msgtxt_left;
 			}
 			else if (strContDisp[i] == '\\' && i + 3 < nLenContent && strContDisp[i + 3] == '\\') {
 				switch (strContDisp[i + 1])
 				{
-				case 's':			// サイズ変更
-					switch (strContDisp[i + 2])
-					{
-					case '0':
-						fh_now = font1;
-						drawY = DLGBOX_TOP + 95;
-						if (drawY_span < 50) {
-							drawY_span = 50;
+				//case 's':			// サイズ変更
+				//	switch (strContDisp[i + 2])
+				//	{
+				//	case '0':
+				//		fh_now = font1;
+				//		drawY = msgwnd_top + msgtxt_top;
+				//		if (drawY_span < 50) {
+				//			drawY_span = 50;
+				//		}
+				//		break;
+				//	case '1':
+				//		fh_now = font4;
+				//		drawY = msgwnd_top + msgtxt_top + 10;
+				//		if (drawY_span < 100) {
+				//			drawY_span = 100;
+				//		}
+				//		break;
+				//	case '2':
+				//		fh_now = font5;
+				//		drawY = msgwnd_top + msgtxt_top;
+				//		if (drawY_span < 25 || i == 0) {
+				//			drawY_span = 25;
+				//		}
+				//		break;
+				//	}
+				//	j += 4;
+				//	break;
+				case 'f':			// フォント変更
+					if (strContDisp[i + 2] >= '0' && strContDisp[i + 2] <= '9') {
+						size_t findex = static_cast<size_t>(strContDisp[i + 2]) - '0';
+						try {
+							fh_now = vfont.at(findex).fh;
+							if (vfont[findex].height < vfont[0].height && i == 0) {
+								drawY_span = vfont[findex].lspace;
+							}
+							else {
+								drawY_span = static_cast<int>(std::fmax(drawY_span, vfont[findex].lspace));
+							}
 						}
-						break;
-					case '1':
-						fh_now = font4;
-						drawY = DLGBOX_TOP + 105;
-						if (drawY_span < 100) {
-							drawY_span = 100;
+						catch (const std::out_of_range&) {
+							ErrorLog(ER_JSON_RULE, "", std::to_string(findex) + (const char*)u8"番目のフォントは存在しません");
+							strContent[i + 2] = '0';
 						}
-						break;
-					case '2':
-						fh_now = font5;
-						drawY = DLGBOX_TOP + 95;
-						if (drawY_span < 25 || i == 0) {
-							drawY_span = 25;
-						}
-						break;
 					}
 					j += 4;
 					break;
-				case 'c':
+				case 'c':			// 色変更
 					if (strContDisp[i + 2] >= 0x30 && strContDisp[i + 2] <= 0x39) {
 						// ここまでの文字列をまず描画
 						DrawStringToHandle(drawX, drawY + nLine * drawY_span, strContDisp.substr(j, i - j).c_str(), color_now, fh_now);
@@ -119,7 +193,7 @@ namespace Game {
 						// 描画x座標に加える
 						drawX += GetDrawStringWidthToHandle(strContDisp.substr(j, i - j).c_str(), static_cast<int>(i - j), fh_now);
 
-						color_now = colorList[strContDisp[i + 2] - 48];
+						color_now = colorList[static_cast<int64_t>(strContDisp[i + 2]) - 48];
 						j += i - j + 4;
 					}
 					break;
@@ -174,88 +248,5 @@ namespace Game {
 		}
 
 		return status;
-	}
-
-	size_t strcount_sjis(string_view str) {
-		size_t zStrCount = 0;
-		size_t zStrLen = str.size();
-		const char* lpStr = str.data();
-
-		for (size_t i = 0; i < zStrLen; ++i) {
-			// 2バイト文字の検出
-			if (((static_cast<unsigned char>(lpStr[i]) >= 0x81 && static_cast<unsigned char>(lpStr[i]) <= 0x9F)
-				|| (static_cast<unsigned char>(lpStr[i]) >= 0xE0 && static_cast<unsigned char>(lpStr[i]) <= 0xFC))
-				&& i + 1 < zStrLen) {
-				zStrCount++;
-				i++;
-			}
-			// 描画指定子を除外
-			else if (lpStr[i] == '\\' && i + 3 < zStrLen && lpStr[i + 3] == '\\') {
-				if (lpStr[i + 1] == 'c' || lpStr[i + 1] == 's') {
-					if (lpStr[i + 2] >= 0x30 && lpStr[i + 2] <= 0x39) {
-						i += 3;
-						continue;
-					}
-				}
-			}
-			else if (lpStr[i] == '\n') {
-				continue;
-			}
-			// 1バイト文字の検出
-			else if ((lpStr[i] >= ' ' && lpStr[i] <= '~') ||
-				(static_cast<unsigned char>(lpStr[i]) >= 0xA1 && static_cast<unsigned char>(lpStr[i]) <= 0xDF)) {
-				zStrCount++;
-			}
-		}
-
-		return zStrCount;
-	}
-
-	string strextract_sjis(string_view str, size_t nCount) {
-		size_t zStrCount = 0;
-		size_t zStrLen = str.size();
-		const char* lpStr = str.data();
-		string strRes = "";
-
-		for (size_t i = 0; i < zStrLen; ++i) {
-			if (zStrCount > nCount) {
-				break;			// 抽出する文字数を超えていたら、終了
-			}
-
-			// 2バイト文字の検出
-			if (((static_cast<unsigned char>(lpStr[i]) >= 0x81 && static_cast<unsigned char>(lpStr[i]) <= 0x9F)
-				|| (static_cast<unsigned char>(lpStr[i]) >= 0xE0 && static_cast<unsigned char>(lpStr[i]) <= 0xFC))
-				&& i + 1 < zStrLen) {
-				strRes += lpStr[i];
-				strRes += lpStr[i + 1];
-				zStrCount++;
-				i++;
-			}
-			// 描画指定子は何もせずに格納
-			else if (lpStr[i] == '\\' && i + 3 < zStrLen && lpStr[i + 3] == '\\') {
-				if (lpStr[i + 1] == 'c' || lpStr[i + 1] == 's') {
-					if (lpStr[i + 2] >= 0x30 && lpStr[i + 2] <= 0x39) {
-						strRes += lpStr[i];
-						strRes += lpStr[i + 1];
-						strRes += lpStr[i + 2];
-						strRes += lpStr[i + 3];
-						i += 3;
-						continue;
-					}
-				}
-			}
-			else if (lpStr[i] == '\n') {
-				strRes += lpStr[i];
-				continue;
-			}
-			// 1バイト文字の検出
-			else if ((lpStr[i] >= ' ' && lpStr[i] <= '~') ||
-				(static_cast<unsigned char>(lpStr[i]) >= 0xA1 && static_cast<unsigned char>(lpStr[i]) <= 0xDF)) {
-				strRes += lpStr[i];
-				zStrCount++;
-			}
-		}
-
-		return strRes;
 	}
 }

@@ -1,11 +1,9 @@
 #pragma once
 #include <string>
-//#include <string_view>
 #include "DxLib.h"
 #include "Global.h"
 
 using std::string;
-//using std::string_view;
 
 namespace Game {
 	enum class BGM_effct

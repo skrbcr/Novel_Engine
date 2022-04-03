@@ -1,18 +1,20 @@
-// skrbcr/Novel_Engine ver.0.1.0（https://github.com/skrbcr/Novel_Engine）
-// DXライブラリ使用のノベルゲームエンジン？のアルファ版
+// skrbcr/Novel_Engine（https://github.com/skrbcr/Novel_Engine）
+// DXライブラリ使用のノベルゲームエンジン？のアルファ版 ver.0.2.0
 // 
 // 配布ソースコードの一部に、以下のライブラリを含みます
-// 著作権表示等の詳細は、README.mdをご覧ください
+// 著作権表示の詳細は、"./nlohmann/json.hpp" や "../README.md" をご覧ください
 // ・nlohmann/json（ https://github.com/nlohmann/json ）version 3.9.1
-// ・javacommons/strconv（ https://github.com/javacommons/strconv ）v1.8.10
 // 
 // また、本ソフトは DXライブラリ（Ver3.23 https://dxlib.xsrv.jp/ ）も使用していますが
-// 配布ソースコードには含んでおりませんので、ビルドされる方は、ご自身でのダウンロードや設定等をお願いいたします
+// 配布ソースコードには含んでおりません
+// ですから、ビルドされる方は、ご自身でのダウンロードや設定等をお願いいたします
 // 
 
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
 #include "DxLib.h"
 #include "nlohmann/json.hpp"
-#include "javacommons/strconv.h"
 #include "Global.h"
 #include "Menu.h"
 #include "Place.h"
@@ -30,8 +32,11 @@ namespace Game {
 	// 各種ハンドルの削除
 	static void DeleteHandles();
 
-	// Config.json の読み込み・タイトル画面も設定
+	// Config.jsonの読み込み・ウィンドウの設定
 	static void LoadConfig();
+
+	// Config.json の適用
+	static bool SetConfig();
 
 	// ゲームのメインループ処理
 	static void GameMain();
@@ -44,31 +49,36 @@ namespace Game {
 }
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
-	/* ウィンドウ設定 */
-	//SetWindowText("Novel Game");				// ウィンドウ名
-	SetMainWindowClassName(Game::GAME_CLASS);	// ウィンドウクラス名を登録
-	SetAlwaysRunFlag(TRUE);						// 非アクティブ時も実行
-	//SetWindowIconID(1);							// アイコン（.icoファイルとicon.rcが必要。引数はicon.rcで設定した任意のアイコンID）
-	SetOutApplicationLogValidFlag(FALSE);		// ログを出力しない
-	ChangeWindowMode(TRUE);						// フルスクリーンにしない
-	SetGraphMode(1280, 720, 32);				// ウィンドウサイズと色ビット数の指定
-	SetWindowSizeExtendRate(1.0);				// 実際に表示するウィンドウサイズに変更
+	/* デバッグ用（メモリリーク検知） */
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	//int* a = new int();		// メモリリークのサンプル（deleteを呼ばない）
 
-	/* 初期化 */
+	/* ウィンドウ設定 */
+	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);	// DxLib関数の文字列引数に使用する文字コードの設定
+	Game::LoadConfig();
+	SetMainWindowText(Game::strGameName.c_str());	// タイトルテキストの設定
+	SetMainWindowClassName(Game::SOFT_NAME);		// ウィンドウクラス名を登録
+	SetAlwaysRunFlag(TRUE);							// 非アクティブ時も実行
+	//SetWindowIconID(1);							// アイコン（.icoファイルとicon.rcが必要。引数はicon.rcで設定した任意のアイコンID）
+	//SetOutApplicationLogValidFlag(FALSE);			// ログを出力しない
+	ChangeWindowMode(TRUE);							// フルスクリーンにしない
+	SetGraphMode(1280, 720, 32);					// ウィンドウサイズと色ビット数の指定
+	SetWindowSizeExtendRate(1.0);					// 実際に表示するウィンドウサイズに変更
+
 	if (DxLib_Init() == -1) {
 		return -1;
 	}
-
 	SetDrawScreen(DX_SCREEN_BACK);				// ダブルバッファの使用
 
 	char key[256];								// キー入力配列
 
 	Game::MakeHandles();
-
-	Game::effect = Game::Effect();
-	Game::bgm = Game::BGM();
-
-	Game::LoadConfig();
+	if (!Game::SetConfig()) {
+		Game::DeleteHandles();
+		DxLib_End();
+		return 0;
+	}
 
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0) {
 		Game::SetKey(key);
@@ -76,8 +86,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 
 	Game::DeleteHandles();
-
-	/* 終了処理 */
 	DxLib_End();
 
 	return 0;
@@ -93,19 +101,18 @@ namespace Game {
 
 	static Menu menu;			// メニュー
 	static Place place;			// 場所インスタンス
-	static Choice choice;		// 選択インスタンス
+
+	static json js_cfg = json();		// Config.json
 
 	void MakeHandles() {
 		// フォント作成
-		font1 = CreateFontToHandle("游明朝", 24, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font2 = CreateFontToHandle("游明朝", 18, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font3 = CreateFontToHandle("游明朝", 20, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font4 = CreateFontToHandle("游明朝", 48, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font5 = CreateFontToHandle("游明朝", 12, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-		font6 = CreateFontToHandle("游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16);
-
-		// ダイアログボックス画像読み込み
-		Dialog::gh_box = LoadGraph("data/picture/[自作]dialog.png");
+		SetFontCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
+		font1 = CreateFontToHandle((const char*)u8"游明朝", 24, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font2 = CreateFontToHandle((const char*)u8"游明朝", 18, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font3 = CreateFontToHandle((const char*)u8"游明朝", 20, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font4 = CreateFontToHandle((const char*)u8"游明朝", 48, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font5 = CreateFontToHandle((const char*)u8"游明朝", 12, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+		font6 = CreateFontToHandle((const char*)u8"游明朝", 30, -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
 	}
 
 	void DeleteHandles() {
@@ -114,80 +121,114 @@ namespace Game {
 		DeleteFontToHandle(font3);
 		DeleteFontToHandle(font4);
 		DeleteFontToHandle(font5);
+
+		for (auto& f : vfont) {
+			DeleteFontToHandle(f.fh);
+		}
 	}
 
 	void LoadConfig() {
 		ifstream ifs = ifstream("data/data/config.json");
-		json js = json();
 		if (ifs) {
 			try {
-				ifs >> js;
+				ifs >> js_cfg;
 			}
 			catch (...) {
 				ErrorLog(ER_JSON_SYNTAX, "data/data/config.json");
 				return;
 			}
-			ifs.close();
 		}
 		else {
 			ErrorLog(ER_JSON_OPEN, "data/data/config.json");
 			return;
 		}
-		// ゲームタイトルの設定
-		if (js["game"].is_object()) {
-			if (js["game"]["name"].is_string()) {
-				strGameName = utf8_to_ansi(js["game"]["name"]);
-				SetWindowTextA(strGameName.c_str());
-			}
-			if (js["game"]["version"].is_string()) {
-				strGameVersion = utf8_to_ansi(js["game"]["version"]);
-			}
-		}
-		// システムSEの読み込み
-		if (js["se"].is_object()) {
-			if (js["se"]["cursor"].is_string()) {
-				sh_cursor = LoadSoundMem(utf8_to_ansi(js["se"]["cursor"]).c_str());
-			}
-			if (js["se"]["decide"].is_string()) {
-				sh_decide = LoadSoundMem(utf8_to_ansi(js["se"]["decide"]).c_str());
-			}
-			if (js["se"]["cancel"].is_string()) {
-				sh_cancel = LoadSoundMem(utf8_to_ansi(js["se"]["cancel"]).c_str());
-			}
-			if (js["se"]["success"].is_string()) {
-				sh_success = LoadSoundMem(utf8_to_ansi(js["se"]["success"]).c_str());
-			}
-			if (js["se"]["fail"].is_string()) {
-				sh_fail = LoadSoundMem(utf8_to_ansi(js["se"]["fail"]).c_str());
-			}
-		}
 
-		// タイトル画面の設定
-		string strBack = "";
-		string strBgm = "";
-		double bgmVol = 1.0;
-		bool showVer = false;
-		if (js["title"].is_object()) {
-			if (js["title"]["back"].is_array()) {
-				if (js["title"]["back"][0].is_string()) {
-					strBack = js["title"]["back"][0];
-					strBack = utf8_to_ansi(strBack);
-				}
+		// ゲームタイトルの設定
+		if (js_cfg["game"].is_object()) {
+			if (js_cfg["game"]["title"].is_string()) {
+				strGameName = js_cfg["game"]["title"];
 			}
-			if (js["title"]["bgm"].is_array()) {
-				if (js["title"]["bgm"][0].is_string()) {
-					strBgm = js["title"]["bgm"][0];
-					strBgm = utf8_to_ansi(strBgm);
-				}
-				if (js["title"]["bgm"][1].is_number()) {
-					bgmVol = js["title"]["bgm"][1];
-				}
-			}
-			if (js["title"]["version"].is_boolean()) {
-				showVer = js["title"]["version"];
+			if (js_cfg["game"]["version"].is_string()) {
+				strGameVersion = js_cfg["game"]["version"];
 			}
 		}
-		title = Title(strBack, strBgm, bgmVol, showVer);
+	}
+
+	bool SetConfig() {
+		// システムSEの読み込み
+		if (js_cfg["se"].is_object()) {
+			se.ApplayConfig(js_cfg["se"]);
+		}
+		// ダイアログ
+		if (js_cfg["dialog"].is_object()) {
+			Dialog::ApplyConfig(js_cfg["dialog"]);
+		}
+		// 選択肢
+		if (js_cfg["choice"].is_object()) {
+			Choice::ApplyConfig(js_cfg["choice"]);
+		}
+		// キャラクター画像
+		if (js_cfg["chara"].is_object()) {
+			if (js_cfg["chara"]["img"].is_array()) {
+				size_t n = js_cfg["chara"]["img"].size();
+				place.InitChara(n);
+				for (size_t i = 0; i < n; ++i) {
+					if (js_cfg["chara"]["img"][i].is_array() && js_cfg["chara"]["img"][i][0].is_string()
+						&& js_cfg["chara"]["img"][i][1].is_number() && js_cfg["chara"]["img"][i][2].is_number()) {
+						place.SetChara(i, js_cfg["chara"]["img"][i][0],
+							js_cfg["chara"]["img"][i][1], js_cfg["chara"]["img"][i][2]);
+					}
+				}
+			}
+		}
+		// タイトル画面の設定
+		if (js_cfg["title"].is_object()) {
+			title.ApplyConfig(js_cfg["title"]);
+		}
+		// フォントの読み込み
+		if (js_cfg["font"]["data"].is_array()) {
+			string strFontFile = "";
+			char lpszFontFile[64] = { '\000' };
+			for (const auto& str : js_cfg["font"]["data"]) {
+				if (str.is_string()) {
+					strFontFile = str;
+					ConvertStringCharCodeFormat(DX_CHARCODEFORMAT_UTF8, strFontFile.c_str(), DX_CHARCODEFORMAT_SHIFTJIS, lpszFontFile);
+					AddFontResourceEx(lpszFontFile, FR_PRIVATE, NULL);
+				}
+				else {
+					ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"フォントデータファイルの指定に誤りがあります。");
+				}
+			}
+		}
+		if (js_cfg["font"]["font"].is_array()) {
+			for (auto& jsf : js_cfg["font"]["font"]) {
+				Font f = Font();
+				string str = string();
+				if (jsf["name"].is_string() && jsf["size"].is_number_integer()) {
+					str = jsf["name"];
+					f.fh = CreateFontToHandle(str.c_str(), jsf["size"], -1, DX_FONTTYPE_ANTIALIASING_16X16, DX_CHARCODEFORMAT_UTF8);
+					f.height = jsf["size"];
+					if (jsf["lspace"].is_number_integer()) {
+						f.lspace = jsf["lspace"];
+					}
+					else {
+						f.lspace = f.height * 2;
+					}
+					vfont.push_back(f);
+				}
+				else {
+					ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"作成するフォントの指定に誤りがあります。");
+				}
+			}
+		}
+		if (vfont.size() == 0) {
+			ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"少なくとも 1つは正常なフォントを作成してください。");
+			return false;
+		}
+		if (vfont.size() > 10) {
+			ErrorLog(ER_JSON_RULE, "Config.json", (const char*)u8"10個を超えるフォントが作成されましたが、11個目以降は利用できません。");
+		}
+		return true;
 	}
 
 	void GameMain() {
@@ -232,8 +273,8 @@ namespace Game {
 		for (int i = 0; i < FLAG_MAX; ++i) {
 			flag[i] = false;
 		}
-		place = Place();
-		choice = Choice();
+		place.Init();
+		//choice = Choice();
 		menu = Menu();
 		index_place = 0;
 

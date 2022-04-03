@@ -1,56 +1,68 @@
 #pragma once
+#include <cmath>
+#include <vector>
 #include <string>
 #include <string_view>
+#include "nlohmann/json.hpp"
 #include "Global.h"
+#include "Utilities.h"
 
-using string = std::string;
-using string_view = std::string_view;
+using std::vector;
+using std::string;
+using std::string_view;
 
 namespace Game {
-	/* ダイアログボックスに合わせて設定 */
-	constexpr int DLGBOX_WIDTH = 1014;		// メッセージボックスの幅
-	constexpr int DLGBOX_HEIGHT = 212;		// メッセージボックスの高さ
-	constexpr int DLGBOX_TOP = 488;			// メッセージボックス上端のy座標
-	constexpr int DLGBOX_LEFT = 133;		// メッセージボックス左端のx座標
-
-	/* 定数 */
-	//constexpr int DLGM_NORMAL = 0;			// 通常
-	//constexpr int DLGM_FINISH = 1;			// 会話終了
-	//constexpr int DLGM_EFFSET = 2;			// エフェクトセット
-
-	// 文字色リスト(処理の都合上、10個まで登録可能)
-	constexpr color_t colorList[10] =
-	{ 0xFFFFFF, 0xff0000, 0xFFCCFF, 0xffff00, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000 };
-
 	/// <summary>
 	/// セリフクラス
 	/// </summary>
 	class Dialog
 	{
-	private:
-		string strSpeaker = "";				// 話者文字列
-		string strContent = "";				// 内容文字列
-		size_t nLenSpeaker = (size_t)0;		// 話者文字列サイズ
-		size_t nLenContent = (size_t)0;		// 内容文字列サイズ
-		bool onDisplay = true;				// ダイアログボックス表示中か
-
-		int status = 0;			// 描画モード
-		string strContDisp = "";			// 実際に表示する用の文字列
-		size_t index_strCont = 0;			// 表示文字語数インデックス
-		size_t nWordContnet = (size_t)0;	// 内容文字列の語数
-
-		int fcounter = 0;
-		int mode = 0;
-
 	public:
 		static int gh_box;			// メッセージボックスの画像
+		static int msgwnd_left;		// メッセージボックスの左端
+		static int msgwnd_top;		// メッセージボックスの上端
+		static int msgwnd_width;	// メッセージボックスの幅
+		static int msgwnd_height;	// メッセージボックスの高さ
+		static int msgspk_left;		// 話者の左端（相対座標）
+		static int msgspk_top;		// 話者の上端（相対座標）
+		static color_t msgspk_color;// 話者の文字色
+		static int msgtxt_left;		// 表示テキストの左端（相対座標）
+		static int msgtxt_top;		// 表示テキストの上端（相対座標）
+		static vector<Font> fontList;		// フォントリスト
+		static vector<color_t> colorList;	// 文字色リスト
 
+	private:
+		string strSpeaker;		// 話者文字列
+		string strContent;		// 内容文字列
+		size_t nLenSpeaker;		// 話者文字列サイズ
+		size_t nLenContent;		// 内容文字列サイズ
+		bool onDisplay;			// ダイアログボックス表示中か
+
+		int status;				// 描画モード
+		string strContDisp;		// 実際に表示する用の文字列
+		size_t index_strCont;	// 表示文字語数インデックス
+		size_t nWordContnet;	// 内容文字列の語数
+
+		int fcounter;		// フレームカウンタ
+		int mode;			// 表示モード
+
+	public:
 		/// <summary>
-		/// Dialogクラスのコンストラクタ
+		/// コンストラクタ
 		/// </summary>
 		Dialog() {
-
+			strSpeaker = "";
+			strContent = "";
+			nLenSpeaker = (size_t)0;
+			nLenContent = (size_t)0;
+			onDisplay = true;
+			status = 0;
+			strContDisp = "";
+			index_strCont = 0;
+			nWordContnet = (size_t)0;
 		}
+
+		static void ApplyConfig(json& js);
 
 		/// <summary>
 		/// Dialogを登録

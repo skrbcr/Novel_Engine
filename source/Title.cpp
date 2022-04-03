@@ -1,23 +1,50 @@
 #include "Title.h"
+#include "Image.h"
 
 namespace Game {
-	Title::Title(string_view strBackImgFile, string_view strBgmFile, double bgmVol, bool showVer) {
-		gh_back = LoadGraph(strBackImgFile.data());
-		if (gh_back == -1) {
-			ErrorLog(ER_IMG_LOAD, strBackImgFile.data());
+	void Title::ApplyConfig(json& js) {
+		string strtmp = "";
+		if (js["back"].is_array()) {
+			if (js["back"][0].is_string()) {
+				strtmp = js["back"][0];
+				gh_back = LoadGraph(strtmp.data());
+				if (gh_back == -1) {
+					ErrorLog(ER_IMG_LOAD, strtmp);
+				}
+			}
 		}
-		sh_bgm = LoadSoundMem(strBgmFile.data());
-		if (sh_bgm == -1) {
-			ErrorLog(ER_SND_LOAD, strBgmFile.data());
+		if (js["bgm"].is_array()) {
+			if (js["bgm"][0].is_string()) {
+				strtmp = js["bgm"][0];
+				sh_bgm = LoadSoundMem(strtmp.data());
+				if (sh_bgm == -1) {
+					ErrorLog(ER_SND_LOAD, strtmp);
+				}
+			}
+			if (js["bgm"][1].is_number()) {
+				this->bgmVol = js["bgm"][1];
+			}
 		}
-		else {
-			this->bgmVol = bgmVol;
+		if (js["se"].is_object()) {
+			if (js["se"]["cursor"].is_number_integer()) {
+				mapSe.insert(std::make_pair("cursor", js["se"]["cursor"]));
+			}
+			if (js["se"]["decide"].is_number_integer()) {
+				mapSe.insert(std::make_pair("decide", js["se"]["decide"]));
+			}
+			if (js["se"]["cancel"].is_number_integer()) {
+				mapSe.insert(std::make_pair("cancel", js["se"]["cancel"]));
+			}
+			if (js["se"]["reject"].is_number_integer()) {
+				mapSe.insert(std::make_pair("reject", js["se"]["reject"]));
+			}
+		}
+		if (js["version"].is_boolean()) {
+			showVerFlag = js["version"];
 		}
 
-		showVerFlag = showVer;
-
-		width_hajime = GetDrawStringWidthToHandle("はじめから", static_cast<int>(strlen("はじめから")), font6);
-		width_tuduki = GetDrawStringWidthToHandle("つづきから", static_cast<int>(strlen("つづきから")), font6);
+		width_hajime = GetDrawStringWidthToHandle((const char*)u8"はじめから", static_cast<int>(strlen((const char*)u8"はじめから")), font6);
+		width_tuduki = GetDrawStringWidthToHandle((const char*)u8"つづきから", static_cast<int>(strlen((const char*)u8"つづきから")), font6);
 
 		button_title = Button(2);
 		button_title.SetGroup(1, 0);
@@ -29,7 +56,7 @@ namespace Game {
 		button_load.SetButton(0, 160, 230, 960, 85);
 		button_load.SetButton(1, 160, 330, 960, 85);
 		button_load.SetButton(2, 160, 430, 960, 85);
-		button_load.SetButton(3, 905, 570, GetDrawStringWidthToHandle("タイトルに戻る", static_cast<int>(strlen("タイトルに戻る")), font3) + 10, 40);
+		button_load.SetButton(3, 905, 570, GetDrawStringWidthToHandle((const char*)u8"タイトルに戻る", static_cast<int>(strlen((const char*)u8"タイトルに戻る")), font3) + 10, 40);
 	}
 
 	int Title::Main() {
@@ -40,22 +67,50 @@ namespace Game {
 		case 0:		// 起動時など
 			// 背景
 			DrawGraph(0, 0, gh_back, FALSE);
-
 			if (fcounter == 0) {
+
 				// セーブデータ読み込み
 				std::ifstream ifs;
 				for (int i = 0; i < MAX_SAVE; ++i) {
-					ifs = std::ifstream("save/save" + std::to_string(i + 1) + ".dat", std::ios::binary);
+					ifs = std::ifstream("save/save" + std::to_string(i + 1) + ".json");
 					if (ifs) {
-						ifs.read(reinterpret_cast<char*>(&saveData[i]), sizeof(SaveData));
+						try {
+							ifs >> js_saveFile[i];
+						}
+						catch (...) {
+							// エラー時の処理
+							
+						}
 						ifs.close();
-						//if (strcmp(saveData[i].strheader, GAME_HEADER) && strcmp(saveData[i].strgm, GAME_NAME)) {
-						opt_title = 1;
-						button_title.SetSelection(1);
-						//}
-						//else {
-						//	saveData[i] = SaveData();
-						//}
+
+						// セーブデータの読み込み処理
+						saveData[i] = SaveData();
+						if (js_saveFile[i]["header"]["soft"]["name"].is_string()) {
+							if (js_saveFile[i]["header"]["soft"]["name"] == SOFT_NAME) {
+								if (js_saveFile[i]["save"].is_object()) {
+									if (js_saveFile[i]["save"]["time"].is_number_integer()) {
+										saveData[i].saveTime = static_cast<time_t>(js_saveFile[i]["save"]["time"]);
+									}
+									if (js_saveFile[i]["save"]["count"].is_number_integer()) {
+										saveData[i].saveCount = js_saveFile[i]["save"]["count"];
+									}
+									if (js_saveFile[i]["save"]["data"]["index_place"].is_number_integer()) {
+										saveData[i].index_place = js_saveFile[i]["save"]["data"]["index_place"];
+									}
+									if (js_saveFile[i]["save"]["data"]["flag"].is_array()) {
+										if (js_saveFile[i]["save"]["data"]["flag"].size() == FLAG_MAX) {
+											for (int j = 0; j < FLAG_MAX; ++j) {
+												if (js_saveFile[i]["save"]["data"]["flag"][j].is_boolean()) {
+													saveData[i].flag[j] = js_saveFile[i]["save"]["data"]["flag"][j];
+												}
+											}
+										}
+									}
+								}
+								opt_title = 1;
+								button_title.SetSelection(1);
+							}
+						}
 					}
 				}
 			}
@@ -84,8 +139,8 @@ namespace Game {
 			DrawBoxAA((WIDTH - 250) / 2, 500, (WIDTH + 250) / 2, 660, 0xAAAAAA, FALSE, 2.f);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			button_title.Main(false);
-			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, "はじめから", 0x000000, font6);
-			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, "つづきから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, (const char*)u8"はじめから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, (const char*)u8"つづきから", 0x000000, font6);
 
 			// バージョン情報
 			if (showVerFlag) {
@@ -93,11 +148,9 @@ namespace Game {
 					HEIGHT - 30, strGameVersion.c_str(), 0x000000, font2);
 			}
 
-			//DrawGraph(62, 92, gh_logo, TRUE);
-
 			// キー操作
 			if (GetSingleUp() || GetSingleDown()) {
-				PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK);
+				se.Play(mapSe["cursor"]);
 				if (opt_title == 0) {
 					opt_title = 1;
 				}
@@ -106,7 +159,7 @@ namespace Game {
 				}
 			}
 			if (GetSingleOk()) {
-				PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
+				se.Play(mapSe["decide"]);
 				if (opt_title == 0) {		// 開始処理開始
 					nPage = 3;
 					fcounter = -1;
@@ -133,30 +186,30 @@ namespace Game {
 			case 1:
 			case 2:
 				if (saveData[opt_load].saveCount != 0) {
-					PlaySoundMem(sh_decide, DX_PLAYTYPE_BACK);
+					se.Play(mapSe["decide"]);
 					nPage = 4;
 					fcounter = -1;
 					bgm.SetEffect(BGM_effct::FADE_OUT, 120);
 				}
 				else {
-					PlaySoundMem(sh_fail, DX_PLAYTYPE_BACK);
+					se.Play(mapSe["reject"]);
 				}
 				break;
 			case 3:
 			case -2:
-				PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
+				se.Play(mapSe["cancel"]);
 				nPage = 1;
 				fcounter = -1;
 				break;
 			}
 
 			// 文字描画
-			DrawStringToHandle(430, 160, "～ロードするファイルを選択～", 0x000000, font3);
-			DrawStringToHandle(160, 240, "・セーブ１", 0x000000, font3);
-			DrawStringToHandle(160, 340, "・セーブ２", 0x000000, font3);
-			DrawStringToHandle(160, 440, "・セーブ３", 0x000000, font3);
+			DrawStringToHandle(430, 160, (const char*)u8"～ロードするファイルを選択～", 0x000000, font3);
+			DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0x000000, font3);
+			DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0x000000, font3);
+			DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0x000000, font3);
 			DrawLine(160, 550, 1120, 550, 0x000000);
-			DrawStringToHandle(910, 580, "タイトルに戻る", 0x000000, font3);
+			DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0x000000, font3);
 
 			for (int i = 0; i < 3; ++i) {
 				if (saveData[i].saveCount != 0) {
@@ -175,7 +228,7 @@ namespace Game {
 					else {
 						strMin = std::to_string(min);
 					}
-					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
+					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
 			}
 			break;
@@ -189,8 +242,8 @@ namespace Game {
 			DrawBoxAA((WIDTH - 250) / 2, 500, (WIDTH + 250) / 2, 660, 0xAAAAAA, FALSE, 2.f);
 			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 			button_title.Main(true);
-			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, "はじめから", 0x000000, font6);
-			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, "つづきから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_hajime) / 2, 528, (const char*)u8"はじめから", 0x000000, font6);
+			DrawStringToHandle((WIDTH - width_tuduki) / 2, 605, (const char*)u8"つづきから", 0x000000, font6);
 
 			// バージョン情報
 			if (showVerFlag) {
@@ -224,12 +277,12 @@ namespace Game {
 			button_load.Main(true);
 
 			// 文字描画
-			DrawStringToHandle(430, 160, "～ロードするファイルを選択～", 0x000000, font3);
-			DrawStringToHandle(160, 240, "・セーブ１", 0x000000, font3);
-			DrawStringToHandle(160, 340, "・セーブ２", 0x000000, font3);
-			DrawStringToHandle(160, 440, "・セーブ３", 0x000000, font3);
+			DrawStringToHandle(430, 160, (const char*)u8"～ロードするファイルを選択～", 0x000000, font3);
+			DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0x000000, font3);
+			DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0x000000, font3);
+			DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0x000000, font3);
 			DrawLine(160, 550, 1120, 550, 0x000000);
-			DrawStringToHandle(910, 580, "タイトルに戻る", 0x000000, font3);
+			DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0x000000, font3);
 			for (int i = 0; i < 3; ++i) {
 				if (saveData[i].saveCount != 0) {
 					struct tm local;
@@ -247,7 +300,7 @@ namespace Game {
 					else {
 						strMin = std::to_string(min);
 					}
-					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, "　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
+					DrawFormatStringToHandle(160, 280 + 100 * i, 0x000000, font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回", year, month, day, hour, strMin.c_str(), saveData[i].saveCount);
 				}
 			}
 

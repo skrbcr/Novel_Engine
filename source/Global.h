@@ -1,19 +1,31 @@
 #pragma once
+#include <vector>
 #include <string>
 #include <string_view>
 #include <fstream>
+#include "nlohmann/json.hpp"
 #include "DxLib.h"
 #include "Effect.h"
 #include "BGM.h"
+#include "SE.h"
 
+using std::vector;
 using std::string;
 using std::string_view;
 using std::ofstream;
 using std::endl;
+using nlohmann::json;
 //using color_t = unsigned int;		// 色
 
 namespace Game {
-	constexpr char GAME_CLASS[] = "skrb_novel";
+	struct Font {
+		int fh = 0;
+		int height = 0;
+		int lspace = 0;
+	};
+
+	constexpr char SOFT_NAME[] = "skrb_novel";
+	constexpr char SOFT_VER[] = "version 0.2.0";
 
 	extern string strGameName;
 	extern string strGameVersion;
@@ -36,20 +48,19 @@ namespace Game {
 	constexpr int ER_IMG_LOAD = 21;
 	constexpr int ER_SND_LOAD = 31;
 
-	extern int sh_cursor;			// カーソルSE(矢印キー・目立たせないOKキー)
-	extern int sh_decide;			// 決定SE
-	extern int sh_cancel;			// キャンセルSE
-	extern int sh_success;			// 成功SE(セーブ時)
-	extern int sh_fail;				// 失敗SE(セーブ時)
+	//extern int sh_cursor;			// カーソルSE(矢印キー・目立たせないOKキー)
+	//extern int sh_decide;			// 決定SE
+	//extern int sh_cancel;			// キャンセルSE
+	//extern int sh_success;			// 成功SE(セーブ時)
+	//extern int sh_fail;				// 失敗SE(セーブ時)
 
 	extern class Effect effect;
 	extern class BGM bgm;
+	extern class SE se;
+	extern vector<Font> vfont;
 
 	struct SaveData
 	{
-		const char* strheader = GAME_CLASS;		// ヘッダー文字列
-		const char* strgm = strGameName.c_str();			// ゲーム名
-		const char* strver = strGameVersion.c_str();		// ヴァージョン
 		time_t saveTime = 0;				// セーブ日時
 		int saveCount = 0;					// セーブ回数
 		int index_place = 0;				// Placeのindex
@@ -57,6 +68,7 @@ namespace Game {
 	};
 
 	__declspec(selectany) struct SaveData saveData[3] = {};
+	__declspec(selectany) json js_saveFile[3] = {};
 
 	extern int font1;		// 24pxフォント
 	extern int font2;		// 18pxフォント
@@ -87,9 +99,6 @@ namespace Game {
 		MOVE_LEFT,		// 背景画像の左へ移動
 		WAIT,			// 待ち時間
 	};
-
-	// システムSE読み込み
-	//void SetSound();
 
 	/// <summary>
 	/// 単押しキー取得

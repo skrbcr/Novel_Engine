@@ -27,10 +27,13 @@
     <ClCompile Include="source\Dialog.cpp" />
     <ClCompile Include="source\Effect.cpp" />
     <ClCompile Include="source\Global.cpp" />
+    <ClCompile Include="source\Image.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Menu.cpp" />
     <ClCompile Include="source\Place.cpp" />
+    <ClCompile Include="source\SE.cpp" />
     <ClCompile Include="source\Title.cpp" />
+    <ClCompile Include="source\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\BackImage.h" />
@@ -41,9 +44,12 @@
     <ClInclude Include="source\Dialog.h" />
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\Global.h" />
+    <ClInclude Include="source\Image.h" />
     <ClInclude Include="source\Menu.h" />
     <ClInclude Include="source\Place.h" />
+    <ClInclude Include="source\SE.h" />
     <ClInclude Include="source\Title.h" />
+    <ClInclude Include="source\Utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

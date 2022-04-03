@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-//#include <string_view>
 #include <vector>
 #include "Global.h"
 #include "Dialog.h"
@@ -20,6 +19,7 @@ namespace Game {
 		int width = 0;				// 選択ボックス幅
 
 	public:
+		static int iSeDecide;
 
 		Choice() {
 
@@ -28,6 +28,12 @@ namespace Game {
 		~Choice() {
 
 		}
+
+		/// <summary>
+		/// 設定の適用
+		/// </summary>
+		/// <param name="js">json["choice"]</param>
+		static void ApplyConfig(json& js);
 
 		/// <summary>
 		/// メイン関数
