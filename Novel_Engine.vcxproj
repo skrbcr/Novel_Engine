@@ -26,6 +26,7 @@
     <ClCompile Include="source\Choice.cpp" />
     <ClCompile Include="source\Dialog.cpp" />
     <ClCompile Include="source\Effect.cpp" />
+    <ClCompile Include="source\GameWindow.cpp" />
     <ClCompile Include="source\Global.cpp" />
     <ClCompile Include="source\Image.cpp" />
     <ClCompile Include="source\Main.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="source\Choice.h" />
     <ClInclude Include="source\Dialog.h" />
     <ClInclude Include="source\Effect.h" />
+    <ClInclude Include="source\GameWindow.h" />
     <ClInclude Include="source\Global.h" />
     <ClInclude Include="source\Image.h" />
     <ClInclude Include="source\Menu.h" />
