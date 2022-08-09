@@ -16,6 +16,7 @@
 #include "DxLib.h"
 #include "Global.h"
 #include "GameWindow.h"
+#include "GameControl.h"
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	/* デバッグ用（メモリリーク検知） */
@@ -24,12 +25,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	//int* a = new int();		// メモリリークのサンプル（deleteを呼ばない）
 	
 	try {
-		Game::GameWindow gw = Game::GameWindow();
-		char key[256];								// キー入力配列
+		//Game::gw = Game::GameWindow();
+		Game::GameControl gc = Game::GameControl();
+		char key[256];		// キー入力配列
 
 		while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && GetHitKeyStateAll(key) == 0) {
-			Game::SetKey(key);
-			gw.GameMain();
+			Game::gw.SetKey(key);
+			gc.GameMain();
 		}
 	}
 	catch (const std::exception&) {

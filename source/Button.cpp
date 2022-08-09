@@ -38,7 +38,7 @@ namespace Game {
 			fcounter++;
 
 			// ÉLÅ[ì¸óÕÇèàóù
-			if (GetSingleRight()) {
+			if (gw.GetSingleRight()) {
 				if (span_hol != 0) {
 					index += span_hol;
 					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
@@ -48,7 +48,7 @@ namespace Game {
 					fcounter = 0;
 				}
 			}
-			if (GetSingleLeft()) {
+			if (gw.GetSingleLeft()) {
 				if (span_hol != 0) {
 					index -= span_hol;
 					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
@@ -58,7 +58,7 @@ namespace Game {
 					fcounter = 0;
 				}
 			}
-			if (GetSingleUp()) {
+			if (gw.GetSingleUp()) {
 				if (span_ver != 0) {
 					index -= span_ver;
 					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
@@ -68,7 +68,7 @@ namespace Game {
 					fcounter = 0;
 				}
 			}
-			if (GetSingleDown()) {
+			if (gw.GetSingleDown()) {
 				if (span_ver != 0) {
 					index += span_ver;
 					//PlaySoundMem(sh_cursor, DX_PLAYTYPE_BACK, TRUE);
@@ -78,10 +78,10 @@ namespace Game {
 					fcounter = 0;
 				}
 			}
-			if (GetSingleOk()) {
+			if (gw.GetSingleOk()) {
 				res = index;
 			}
-			if (GetSingleCancel()) {
+			if (gw.GetSingleCancel()) {
 				res = -2;
 			}
 		}

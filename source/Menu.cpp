@@ -22,25 +22,25 @@ namespace Game {
 		if (i < 0 || i > MAX_SAVE - 1) {
 			return -1;
 		}
-		saveData[i].saveTime = time(NULL);
-		saveData[i].saveCount++;
-		saveData[i].index_place = index_place;
+		gw.saveData[i].saveTime = time(NULL);
+		gw.saveData[i].saveCount++;
+		gw.saveData[i].index_place = index_place;
 		for (int j = 0; j < FLAG_MAX; ++j) {
-			saveData[i].flag[j] = flag[j];
+			gw.saveData[i].flag[j] = flag[j];
 		}
 
 		// セーブファイル作成
 		try {
-			js_saveFile[i] = json::object();
-			js_saveFile[i]["header"]["soft"]["name"] = SOFT_NAME;
-			js_saveFile[i]["header"]["soft"]["ver"] = SOFT_VER;
-			js_saveFile[i]["header"]["game"]["title"] = strGameName;
-			js_saveFile[i]["header"]["game"]["ver"] = strGameVersion;
-			js_saveFile[i]["save"]["time"] = saveData[i].saveTime;
-			js_saveFile[i]["save"]["count"] = saveData[i].saveCount;
-			js_saveFile[i]["save"]["data"]["index_place"] = saveData[i].index_place;
+			gw.js_saveFile[i] = json::object();
+			gw.js_saveFile[i]["header"]["soft"]["name"] = SOFT_NAME;
+			gw.js_saveFile[i]["header"]["soft"]["ver"] = SOFT_VER;
+			gw.js_saveFile[i]["header"]["game"]["title"] = gw.strGameName;
+			gw.js_saveFile[i]["header"]["game"]["ver"] = gw.strGameVersion;
+			gw.js_saveFile[i]["save"]["time"] = gw.saveData[i].saveTime;
+			gw.js_saveFile[i]["save"]["count"] = gw.saveData[i].saveCount;
+			gw.js_saveFile[i]["save"]["data"]["index_place"] = gw.saveData[i].index_place;
 			for (int j = 0; j < FLAG_MAX; ++j) {
-				js_saveFile[i]["save"]["data"]["flag"][j] = saveData[i].flag[j];
+				gw.js_saveFile[i]["save"]["data"]["flag"][j] = gw.saveData[i].flag[j];
 			}
 		}
 		catch (...) {
@@ -57,7 +57,7 @@ namespace Game {
 		}
 		ofs = std::ofstream("save/save" + std::to_string(i + 1) + ".json");
 		if (ofs) {
-			ofs << js_saveFile[i];
+			ofs << gw.js_saveFile[i];
 			ofs.close();
 			return 0;
 		}
@@ -75,11 +75,11 @@ namespace Game {
 		int res = 0;
 
 		// メニュー開閉確認
-		if (onMenuAllow && !onMenu && GetSingleCancel()) {		// 選択肢・メニューなし・キャンセルキー
+		if (onMenuAllow && !onMenu && gw.GetSingleCancel()) {		// 選択肢・メニューなし・キャンセルキー
 			// メニューオープンSE
 			onMenu = true;
 		}
-		else if (onMenu && !onTitle && GetSingleCancel()) {	// メニュー中・タイトル戻り確認なし・キャンセルキー
+		else if (onMenu && !onTitle && gw.GetSingleCancel()) {	// メニュー中・タイトル戻り確認なし・キャンセルキー
 			//PlaySoundMem(sh_cancel, DX_PLAYTYPE_BACK);
 			onMenu = false;
 		}
@@ -97,18 +97,18 @@ namespace Game {
 		opt = button1.Main(onTitle);
 
 		// 文字描画
-		DrawStringToHandle(560, 160, (const char*)u8"～セーブ～", 0xFFFFFF, font3);
-		DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0xFFFFFF, font3);
-		DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0xFFFFFF, font3);
-		DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0xFFFFFF, font3);
-		DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0xFFFFFF, font3);
+		DrawStringToHandle(560, 160, (const char*)u8"～セーブ～", 0xFFFFFF, gw.font3);
+		DrawStringToHandle(160, 240, (const char*)u8"・セーブ１", 0xFFFFFF, gw.font3);
+		DrawStringToHandle(160, 340, (const char*)u8"・セーブ２", 0xFFFFFF, gw.font3);
+		DrawStringToHandle(160, 440, (const char*)u8"・セーブ３", 0xFFFFFF, gw.font3);
+		DrawStringToHandle(910, 580, (const char*)u8"タイトルに戻る", 0xFFFFFF, gw.font3);
 
 		DrawLine(160, 550, 1120, 550, 0xFFFFFF);
 
 		for (int i = 0; i < 3; ++i) {
-			if (saveData[i].saveCount != 0) {
+			if (gw.saveData[i].saveCount != 0) {
 				struct tm local;
-				localtime_s(&local, &saveData[i].saveTime);
+				localtime_s(&local, &gw.saveData[i].saveTime);
 				int year = local.tm_year + 1900;
 				int month = local.tm_mon + 1;
 				int day = local.tm_mday;
@@ -122,8 +122,8 @@ namespace Game {
 					sprintf_s(min2, 3, "%d", min);
 				}
 
-				DrawFormatStringToHandle(160, 280 + 100 * i, 0xFFFFFF, font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回",
-					year, month, day, hour, min2, saveData[i].saveCount);
+				DrawFormatStringToHandle(160, 280 + 100 * i, 0xFFFFFF, gw.font3, (const char*)u8"　最終セーブ：%d年%d月%d日　%d時%s分　セーブ回数：%d回",
+					year, month, day, hour, min2, gw.saveData[i].saveCount);
 			}
 		}
 
@@ -160,9 +160,9 @@ namespace Game {
 				break;
 			}
 
-			DrawStringToHandle(475, 345, (const char*)u8"タイトルに戻りますか？", 0x000000, font3);
-			DrawStringToHandle(565, 410, (const char*)u8"はい", yes, font3);
-			DrawStringToHandle(655, 410, (const char*)u8"いいえ", no, font3);
+			DrawStringToHandle(475, 345, (const char*)u8"タイトルに戻りますか？", 0x000000, gw.font3);
+			DrawStringToHandle(565, 410, (const char*)u8"はい", yes, gw.font3);
+			DrawStringToHandle(655, 410, (const char*)u8"いいえ", no, gw.font3);
 		}
 		else {
 			switch (opt)

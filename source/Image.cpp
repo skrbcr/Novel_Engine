@@ -77,10 +77,10 @@ namespace Game {
 						y = im._arg1 + static_cast<double>(im.y) * im._fcounter / im.frame;
 						break;
 					case ImageMotionType::MOVE_ACCEL_X:
-						x = im._arg1 + im._arg2 * std::pow(im._fcounter, 2.0) * (2 * im._fcounter - 3 * im.frame);
+						x = im._arg1 + im._arg2 * std::pow(im._fcounter, 2.) * (2. * im._fcounter - 3. * im.frame);
 						break;
 					case ImageMotionType::MOVE_ACCEL_Y:
-						y = im._arg1 + im._arg2 * std::pow(im._fcounter, 2.0) * (2 * im._fcounter - 3 * im.frame);
+						y = im._arg1 + im._arg2 * std::pow(im._fcounter, 2.) * (2. * im._fcounter - 3. * im.frame);
 						break;
 					case ImageMotionType::JUMP_X:
 						break;

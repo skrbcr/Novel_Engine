@@ -89,7 +89,7 @@ namespace Game {
 		DrawGraph(msgwnd_left, msgwnd_top, gh_box, TRUE);
 
 		// 話者の描画
-		DrawStringToHandle(msgwnd_left + msgspk_left, msgwnd_top + msgspk_top, strSpeaker.c_str(), msgspk_color, font1);
+		DrawStringToHandle(msgwnd_left + msgspk_left, msgwnd_top + msgspk_top, strSpeaker.c_str(), msgspk_color, gw.font1);
 
 		switch (status)
 		{
@@ -123,9 +123,9 @@ namespace Game {
 		int nLine = 0;
 		int drawX = msgwnd_left + msgtxt_left;
 		int drawY = msgwnd_top + msgtxt_top;
-		int drawY_span = vfont[0].lspace;
+		int drawY_span = gw.vfont[0].lspace;
 		color_t color_now = colorList[0];
-		int fh_now = vfont[0].fh;
+		int fh_now = gw.vfont[0].fh;
 		size_t i;
 		size_t j = (size_t)0;		// 描画開始位置
 
@@ -170,12 +170,12 @@ namespace Game {
 					if (strContDisp[i + 2] >= '0' && strContDisp[i + 2] <= '9') {
 						size_t findex = static_cast<size_t>(strContDisp[i + 2]) - '0';
 						try {
-							fh_now = vfont.at(findex).fh;
-							if (vfont[findex].height < vfont[0].height && i == 0) {
-								drawY_span = vfont[findex].lspace;
+							fh_now = gw.vfont.at(findex).fh;
+							if (gw.vfont[findex].height < gw.vfont[0].height && i == 0) {
+								drawY_span = gw.vfont[findex].lspace;
 							}
 							else {
-								drawY_span = static_cast<int>(std::fmax(drawY_span, vfont[findex].lspace));
+								drawY_span = static_cast<int>(std::fmax(drawY_span, gw.vfont[findex].lspace));
 							}
 						}
 						catch (const std::out_of_range&) {
@@ -213,7 +213,7 @@ namespace Game {
 				Draw();
 
 				// 入力の処理
-				if (GetSingleOk()) {
+				if (gw.GetSingleOk()) {
 					if (status == 1) {
 						status = 2;
 					}
@@ -221,12 +221,12 @@ namespace Game {
 						return 0;
 					}
 				}
-				else if (GetSingleCancel()) {
+				else if (gw.GetSingleCancel()) {
 					onDisplay = false;
 				}
 			}
 			else {
-				if (GetSingleCancel()) {
+				if (gw.GetSingleCancel()) {
 					onDisplay = true;
 				}
 			}
@@ -238,7 +238,7 @@ namespace Game {
 			int res = status;
 
 			// 入力の処理
-			if (GetSingleOk()) {
+			if (gw.GetSingleOk()) {
 				if (status == 1) {
 					status = 2;
 				}

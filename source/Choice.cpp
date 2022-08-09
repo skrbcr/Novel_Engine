@@ -21,7 +21,7 @@ namespace Game {
 		// ‘I‘ðŽˆ•\Ž¦
 		for (int i = 0; i < num; ++i) {
 			DrawStringToHandle(Dialog::msgwnd_left + Dialog::msgwnd_width - width - 15, Dialog::msgwnd_top - 30 - 50 * (num - i),
-				strOptList[i].data(), 0xFFFFFF, font1);
+				strOptList[i].data(), 0xFFFFFF, gw.font1);
 		}
 
 		count = button.Main(onMenu);
@@ -42,7 +42,7 @@ namespace Game {
 		int width_tmp = 0;
 		for (int i = 0; i < num; ++i) {
 			strOptList[i] = strList[i];
-			width_tmp = GetDrawStringWidthToHandle(strOptList[i].c_str(), static_cast<int>(strOptList[i].size()), font1);
+			width_tmp = GetDrawStringWidthToHandle(strOptList[i].c_str(), static_cast<int>(strOptList[i].size()), gw.font1);
 			if (width_tmp > width) {
 				width = width_tmp;
 			}

@@ -6,6 +6,7 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 #include "DxLib.h"
+#include "GameWindow.h"
 #include "Effect.h"
 #include "BGM.h"
 #include "SE.h"
@@ -14,34 +15,12 @@ using std::vector;
 using std::string;
 using std::string_view;
 using std::ofstream;
+using std::ifstream;
 using std::endl;
 using nlohmann::json;
-//using color_t = unsigned int;		// 色
+using color_t = unsigned int;		// 色
 
 namespace Game {
-	struct Font {
-		int fh = 0;
-		int height = 0;
-		int lspace = 0;
-	};
-
-	constexpr char SOFT_NAME[] = "skrb_novel";
-	constexpr char SOFT_VER[] = "version 0.2.0";
-
-	extern string strGameName;
-	extern string strGameVersion;
-
-	constexpr int WIDTH = 1280;		// ウィンドウ幅
-	constexpr int HEIGHT = 720;		// ウィンドウ高さ
-	constexpr int MAX_SAVE = 3;		// セーブファイル最大
-	constexpr int FLAG_MAX = 64;	// フラグの最大値・いずれ使用停止
-
-	constexpr char STR_BGM_DIRECTORY[] = "data/bgm/";
-	constexpr char STR_BGS_DIRECTORY[] = "data/bgs/";
-	constexpr char STR_ME_DIRECTORY[] = "data/me/";
-	constexpr char STR_SE_DIRECTORY[] = "data/se/";
-	constexpr char STR_JSON_DIRECTORY[] = "data/data/";	
-
 	constexpr int ER_JSON_OPEN = 10;
 	constexpr int ER_JSON_SYNTAX = 11;
 	constexpr int ER_JSON_RULE = 12;
@@ -49,34 +28,11 @@ namespace Game {
 	constexpr int ER_IMG_LOAD = 21;
 	constexpr int ER_SND_LOAD = 31;
 
-	//extern int sh_cursor;			// カーソルSE(矢印キー・目立たせないOKキー)
-	//extern int sh_decide;			// 決定SE
-	//extern int sh_cancel;			// キャンセルSE
-	//extern int sh_success;			// 成功SE(セーブ時)
-	//extern int sh_fail;				// 失敗SE(セーブ時)
+	extern class GameWindow gw;
 
 	extern class Effect effect;
 	extern class BGM bgm;
 	extern class SE se;
-	extern vector<Font> vfont;
-
-	struct SaveData
-	{
-		time_t saveTime = 0;				// セーブ日時
-		int saveCount = 0;					// セーブ回数
-		int index_place = 0;				// Placeのindex
-		bool flag[FLAG_MAX] = { false };	// フラグ配列
-	};
-
-	__declspec(selectany) struct SaveData saveData[3] = {};
-	__declspec(selectany) json js_saveFile[3] = {};
-
-	extern int font1;		// 24pxフォント
-	extern int font2;		// 18pxフォント
-	extern int font3;		// 20pxフォント
-	extern int font4;		// 48pxフォント
-	extern int font5;		// 12pxフォント
-	extern int font6;		// 30pxフォント
 
 	extern bool onMenu;		// メニューオープン中フラグ
 	extern bool onMenuAllow;// メニューオープン許可フラグ
@@ -100,33 +56,6 @@ namespace Game {
 		MOVE_LEFT,		// 背景画像の左へ移動
 		WAIT,			// 待ち時間
 	};
-
-	/// <summary>
-	/// 単押しキー取得
-	/// </summary>
-	/// <param name="key">キー配列</param>
-	void SetKey(const char* key);
-
-	// OKキー単押し取得
-	bool GetSingleOk();
-
-	// Cancelキー単押し取得
-	bool GetSingleCancel();
-
-	// 上キー単押し取得
-	bool GetSingleUp();
-
-	// 下キー単押し取得
-	bool GetSingleDown();
-
-	// 右キー単押し取得
-	bool GetSingleRight();
-
-	// 左キー単押し取得
-	bool GetSingleLeft();
-
-	// スキップキー取得
-	bool GetAutoSkip();
 
 	// エラーログの出力
 	void ErrorLog(int ER_TYPE, string_view state1 = "", string_view state2 = "");
